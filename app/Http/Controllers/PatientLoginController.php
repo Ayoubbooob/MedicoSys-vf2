@@ -31,8 +31,12 @@ class PatientLoginController extends Controller
                 $lifetime = $patient->getSessionTTL();
 
                 return response()->json([
-                    'success' => true,
-                    'patient' => $patientData,
+                    'id' => $patient->id,
+                    'first_name' => $patient->first_name,
+                    'last_name' => $patient->last_name,
+                    'ppr' => $patient->ppr,
+                    'num' => $patient->num,
+                    'cin' => $patient->cin
                 ]);
             }
         }
