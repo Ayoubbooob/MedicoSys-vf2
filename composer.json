@@ -11,7 +11,8 @@
         "laravel/framework": "^10.0",
         "laravel/sanctum": "^3.2",
         "laravel/tinker": "^2.8",
-        "spatie/laravel-permission": "^5.10"
+        "spatie/laravel-permission": "^5.10",
+        "statikbe/laravel-filament-flexible-content-blocks": "^0.1.9"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

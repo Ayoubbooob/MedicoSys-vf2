@@ -9,14 +9,11 @@ class appointment extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'patient_id',
-        'doctor_id',
-        'appointment_date',
-        'major_id'
+    protected $guarded = [];
+
+    protected $casts = [
+        'informations_supplementaires' => 'json',
     ];
-
-
     public function patient()
     {
         return $this->belongsTo(patient::class);

@@ -32,28 +32,27 @@ class MedicalFileResource extends Resource
         return $form
             ->schema([
                 Card::make()
-                ->schema([
-                    // Select::make('country_id')
-                    // ->label('Country')
-                    // ->options(Country::all()->pluck('name', 'id')->toArray())
-                    // ->required()
-                    // ->reactive()
-                    // ->afterStateUpdated(fn (callable $set) => $set('state_id', null)),
-                    Select::make('patient_id')
-                    ->label('PPR')
-                    ->options(patient::all()->pluck('ppr', 'id')->toArray())
-                    ->required()
-                    ->reactive(),
-                    DatePicker::make('creation_date')->label("Date de creation")->required(),
-
-                ]),
+                    ->schema([
+                        // Select::make('country_id')
+                        // ->label('Country')
+                        // ->options(Country::all()->pluck('name', 'id')->toArray())
+                        // ->required()
+                        // ->reactive()
+                        // ->afterStateUpdated(fn (callable $set) => $set('state_id', null)),
+                        Select::make('patient_id')
+                            ->label('PPR')
+                            ->options(patient::all()->pluck('ppr', 'id')->toArray())
+                            ->required()
+                            ->reactive(),
+                        DatePicker::make('creation_date')->label("Date de creation")->required(),
+                    ]),
                 Card::make()
                     ->schema([
                         Repeater::make('dynamic_field')
-                        ->schema([
-                            TextInput::make('dynamic_field')->required(),
-                        ])
-                        ->createItemButtonLabel('Ajouter champs')
+                            ->schema([
+                                TextInput::make('dynamic_field')->required(),
+                            ])
+                            ->createItemButtonLabel('Ajouter champs')
 
                     ])
 
