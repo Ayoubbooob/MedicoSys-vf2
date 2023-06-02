@@ -18,8 +18,16 @@ class patient extends Model implements Authenticatable
         'cin',
         'password',
         'num',
-        'ppr'
+        'gender',
+        'email',
+        'marital_status',
+        'birth_date'
     ];
+
+    public function getFullNameWithCinAttribute()
+    {
+        return $this->first_name . ' ' . $this->last_name . ' ' . $this->cin;
+    }
 
     public function appointments()
     {
@@ -30,6 +38,8 @@ class patient extends Model implements Authenticatable
     {
         return $this->hasMany(AppointmentRequest::class);
     }
+
+
 
     public function imcs()
     {
