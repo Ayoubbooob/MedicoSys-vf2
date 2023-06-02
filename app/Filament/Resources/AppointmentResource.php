@@ -4,24 +4,22 @@ namespace App\Filament\Resources;
 
 use Filament\Forms\Components\Repeater;
 use App\Filament\Resources\AppointmentResource\Pages;
-use App\Filament\Resources\AppointmentResource\RelationManagers;
 use App\Models\Appointment;
 use Filament\Forms;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User;
 use App\Models\doctor;
-use Illuminate\Contracts\Auth\Authenticatable;
+use App\Models\medical_file;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
 use App\Models\Patient;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Textarea;
 use Illuminate\Support\Carbon;
 
@@ -36,9 +34,9 @@ class AppointmentResource extends Resource
 
         return $form
             ->schema([
-                Select::make('patient_id')
-                    ->options(Patient::all()->mapWithKeys(function ($patient) {
-                        return [$patient->id => "{$patient->first_name} {$patient->last_name} - {$patient->cin}"];
+                Select::make('medical_file_id')
+                    ->options(medical_file::all()->mapWithKeys(function ($medical_file) {
+                        return [$medical_file->id => "{$medical_file->patient->first_name} {$medical_file->patient->last_name} - {$medical_file->ppr}"];
                     })),
                 Select::make('doctor_id')
                     ->options(Doctor::all()->mapWithKeys(function ($doctor) {
@@ -48,8 +46,25 @@ class AppointmentResource extends Resource
                 Textarea::make('motif'),
                 Repeater::make('informations_supplementaires')
                     ->schema([
-                        TextInput::make('informations_supplementaires'),
+                        MarkdownEditor::make('informations_supplementaires')
+                            ->enableToolbarButtons([
+                                'attachFiles',
+                                'bold',
+                                'bulletList',
+                                'codeBlock',
+                                'edit',
+                                'italic',
+                                'link',
+                                'orderedList',
+                                'preview',
+                                'strike',
+                            ]),
+                        FileUpload::make('image_url')
+                            ->label('Image d\'examen')
+                            ->image()->multiple(),
+
                     ])
+
             ]);
     }
 
@@ -57,26 +72,23 @@ class AppointmentResource extends Resource
     {
         return $table
             ->columns([
-                // TextColumn::make('patient_id')->searchable(),
-                // TextColumn::make('doctor_id')->searchable(),
-                // TextColumn::make('appointment_date')->dateTime()->sortable(),
-                TextColumn::make('patient.first_name')
+                TextColumn::make('medical_file.patient.first_name')
                     ->label('Prenom Patient')
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
-                TextColumn::make('patient.last_name')
+                TextColumn::make('medical_file.patient.last_name')
                     ->label('Nom Patient')
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
-                TextColumn::make('patient.tel')
+                TextColumn::make('medical_file.patient.num')
                     ->label('Telephone Patient')
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
-                TextColumn::make('patient.ppr')
-                    ->label('Ppr Patient')
+                TextColumn::make('medical_file.patient.cin')
+                    ->label('Cin Patient')
                     ->searchable()
                     ->sortable()
                     ->toggleable(),

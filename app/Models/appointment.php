@@ -14,9 +14,9 @@ class appointment extends Model
     protected $casts = [
         'informations_supplementaires' => 'json',
     ];
-    public function patient()
+    public function medical_file()
     {
-        return $this->belongsTo(patient::class);
+        return $this->belongsTo(medical_file::class);
     }
 
     public function doctor()
