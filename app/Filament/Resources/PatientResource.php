@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Filament\Resources;
-
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Select;
 use App\Filament\Resources\PatientResource\Pages;
 use App\Filament\Resources\PatientResource\RelationManagers;
 use App\Models\patient;
@@ -32,13 +33,31 @@ class PatientResource extends Resource
                         TextInput::make('first_name')->label('Prénom')->required()->maxLength(255),
                         TextInput::make('last_name')->label('Nom')->required()->maxLength(255),
                         TextInput::make('cin')->label('CIN')->required()->maxLength(255)->unique(),
-                        TextInput::make('ppr')->label('PPR')->required()->maxLength(255)->unique(),
+//                        TextInput::make('ppr')->label('PPR')->required()->maxLength(255)->unique(),
                         TextInput::make('num')->label('Numéro de téléphone')->required()->maxLength(255),
-                        TextInput::make('password')->label('Password')->required()->maxLength(255)
+                        Select::make('gender')->label('Genre')
+                            ->options([
+                                'male' => 'Homme',
+                                'female' => 'Femme',
+                            ])
+                            ->required(),
+                        TextInput::make('email')->label('Email')->maxLength(255),
+                        Select::make('marital_status')->label('Situation familiale')
+                            ->options([
+                                'marié' => 'Marié(e)',
+                                'célibataire' => 'Célibataire',
+                                'divorcé' => 'Divorcé(e)',
+                                'veuf' => 'Veuf(veuve)',
+
+                            ]),
+
+                        DatePicker::make('birth_date'),
+                        TextInput::make('password')->label('Password')->maxLength(255)
                             ->password()
                             ->dehydrateStateUsing(fn ($state) => Hash::make($state))
-                            ->dehydrated(fn ($state) => filled($state))
-                            ->required(fn (string $context): bool => $context === 'create'),
+                            ->dehydrated(fn ($state) => filled($state)),
+//                            ->required(fn (string $context): bool => $context === 'create'),
+
 
                     ])
             ]);

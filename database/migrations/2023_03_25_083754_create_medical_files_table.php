@@ -14,8 +14,15 @@ return new class extends Migration
         Schema::create('medical_files', function (Blueprint $table) {
             $table->id();
             $table->foreignId('patient_id')->unsigned();
-            $table->dateTime('creation_date');
             $table->foreign('patient_id')->references('id')->on('patients')->onDelete('cascade');
+            $table->string('ppr')->unique();
+            $table->json('dynamic_fields');
+//            $table->json('antecedents')->nullable();
+//            $table->json('biometrie')->nullable();
+//            $table->text('traitement_chronique')->nullable();
+//            $table->json('vaccination')->nullable();
+//            $table->json('examen_biologiques')->nullable();
+
             $table->timestamps();
         });
     }
