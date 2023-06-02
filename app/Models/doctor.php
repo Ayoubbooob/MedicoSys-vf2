@@ -9,11 +9,7 @@ class doctor extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'first_name',
-        'last_name',
-        'speciality',
-    ];
+    protected $guarded = [];
 
     public function consultations()
     {
@@ -24,6 +20,4 @@ class doctor extends Model
     {
         return $this->hasMany(Appointement::class);
     }
-
-
 }

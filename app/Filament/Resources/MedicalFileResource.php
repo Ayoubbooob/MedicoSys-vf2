@@ -126,6 +126,7 @@ class MedicalFileResource extends Resource
                             ]),
                         ]),
 
+
                     ])
                     ])
             ->columns(2);

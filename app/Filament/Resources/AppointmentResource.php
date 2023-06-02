@@ -2,12 +2,14 @@
 
 namespace App\Filament\Resources;
 
+use Filament\Forms\Components\Repeater;
 use App\Filament\Resources\AppointmentResource\Pages;
 use App\Filament\Resources\AppointmentResource\RelationManagers;
 use App\Models\Appointment;
 use Filament\Forms;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Models\doctor;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Resources\Form;
@@ -18,6 +20,10 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Select;
+use App\Models\Patient;
+use Filament\Forms\Components\Textarea;
+use Illuminate\Support\Carbon;
 
 class AppointmentResource extends Resource
 {
@@ -27,15 +33,23 @@ class AppointmentResource extends Resource
 
     public static function form(Form $form): Form
     {
+
         return $form
             ->schema([
-                //
-
-                TextInput::make('id'),
-                TextInput::make('patient_id'),
-                TextInput::make('doctor_id'),
-                TextInput::make('major_id'),
+                Select::make('patient_id')
+                    ->options(Patient::all()->mapWithKeys(function ($patient) {
+                        return [$patient->id => "{$patient->first_name} {$patient->last_name} - {$patient->cin}"];
+                    })),
+                Select::make('doctor_id')
+                    ->options(Doctor::all()->mapWithKeys(function ($doctor) {
+                        return [$doctor->id => "{$doctor->first_name} {$doctor->last_name} - {$doctor->cin}"];
+                    })),
                 DateTimePicker::make('appointment_date'),
+                Textarea::make('motif'),
+                Repeater::make('informations_supplementaires')
+                    ->schema([
+                        TextInput::make('informations_supplementaires'),
+                    ])
             ]);
     }
 
@@ -43,25 +57,103 @@ class AppointmentResource extends Resource
     {
         return $table
             ->columns([
-                //
+                // TextColumn::make('patient_id')->searchable(),
+                // TextColumn::make('doctor_id')->searchable(),
+                // TextColumn::make('appointment_date')->dateTime()->sortable(),
+                TextColumn::make('patient.first_name')
+                    ->label('Prenom Patient')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(),
+                TextColumn::make('patient.last_name')
+                    ->label('Nom Patient')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(),
+                TextColumn::make('patient.tel')
+                    ->label('Telephone Patient')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(),
+                TextColumn::make('patient.ppr')
+                    ->label('Ppr Patient')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(),
+                TextColumn::make('doctor.first_name')
+                    ->label('Prenom Docteur')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(),
+                TextColumn::make('doctor.last_name')
+                    ->label('Nom Docteur')
+                    ->sortable()
+                    ->toggleable(),
+                TextColumn::make('appointment_date')
+                    ->label('Date de RDV')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(),
+                TextColumn::make('motif')
+                    ->label('Motif')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(),
+                TextColumn::make('created_at')
+                    ->label('Date de creation')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(),
+                TextColumn::make('updated_at')
+                    ->label('Date de Modification')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(),
             ])
             ->filters([
-                //
-            //->query(static::getModel()::query()->where('doctor_id', $userId))
+                Tables\Filters\Filter::make('created_at')
+                    ->form([
+                        Forms\Components\DatePicker::make('created_from')
+                            ->placeholder(fn ($state): string => 'Dec 18, ' . now()->subYear()->format('Y')),
                     ])
-            ->columns([
-                TextColumn::make('id')->searchable(),
-                TextColumn::make('patient_id')->searchable(),
-                TextColumn::make('doctor_id')->searchable(),
-                TextColumn::make('major_id')->searchable(),
-                TextColumn::make('appointment_date')->dateTime()->sortable(),
-            ])
-            ->filters([
-                // Filter::make('is_featured')
-                //     ->query(fn (Builder $query): Builder => $query->where('doctor_id', $userId))
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['created_from'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                            );
+                    })
+                    ->indicateUsing(function (array $data): array {
+                        $indicators = [];
+                        if ($data['created_from'] ?? null) {
+                            $indicators['created_from'] = 'Appointment from ' . Carbon::parse($data['created_from'])->toFormattedDateString();
+                        }
+                        return $indicators;
+                    }),
+                Tables\Filters\Filter::make('updated_at')
+                    ->form([
+                        Forms\Components\DatePicker::make('updated_from')
+                            ->placeholder(fn ($state): string => 'Dec 18, ' . now()->subYear()->format('Y')),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['updated_from'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('updated_at', '>=', $date),
+                            );
+                    })
+                    ->indicateUsing(function (array $data): array {
+                        $indicators = [];
+                        if ($data['updated_from'] ?? null) {
+                            $indicators['updated_from'] = 'Appointment from ' . Carbon::parse($data['updated_from'])->toFormattedDateString();
+                        }
+                        return $indicators;
+                    }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ViewAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
@@ -93,7 +185,7 @@ class AppointmentResource extends Resource
             'index' => Pages\ListAppointments::route('/'),
             'create' => Pages\CreateAppointment::route('/create'),
             'edit' => Pages\EditAppointment::route('/{record}/edit'),
+            'view' => Pages\ViewAppointment::route('/{record}'),
         ];
     }
-
 }

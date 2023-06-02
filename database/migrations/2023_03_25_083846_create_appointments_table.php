@@ -16,10 +16,9 @@ return new class extends Migration
             $table->foreignId('patient_id')->unsigned();
             $table->foreignId('doctor_id')->unsigned();
             $table->dateTime('appointment_date');
-            $table->foreignId('major_id')->unsigned();
+            $table->string('motif');
             $table->foreign('patient_id')->references('id')->on('patients')->onDelete('cascade');
             $table->foreign('doctor_id')->references('id')->on('doctors')->onDelete('cascade');
-            $table->foreign('major_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }
