@@ -14,7 +14,7 @@ class medical_file extends Model
     //    protected $fillable = ['ppr', 'patient_id',  'antecedents', 'biometrie', 'traitement_chronique', 'vaccination', 'examen_biologiques'];
 
 
-    protected $fillable = ['ppr', 'patient_id',  'dynamic_fields'];
+    protected $guarded = [];
 
 
     protected $casts = [

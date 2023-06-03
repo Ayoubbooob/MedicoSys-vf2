@@ -12,18 +12,18 @@ class patient extends Model implements Authenticatable
 {
     use HasFactory, Notifiable;
 
-    protected $fillable = [
-        'first_name',
-        'last_name',
-        'cin',
-        'password',
-        'num',
-        'gender',
-        'email',
-        'marital_status',
-        'birth_date'
-    ];
-
+    // protected $fillable = [
+    //     'first_name',
+    //     'last_name',
+    //     'cin',
+    //     'password',
+    //     'num',
+    //     'gender',
+    //     'email',
+    //     'marital_status',
+    //     'birth_date'
+    // ];
+    protected $guarded = [];
     public function getFullNameWithCinAttribute()
     {
         return $this->first_name . ' ' . $this->last_name . ' ' . $this->cin;

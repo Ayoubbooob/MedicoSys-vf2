@@ -69,7 +69,6 @@ class PatientResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('id')->sortable(),
-                //                TextColumn::make('ppr')->sortable()->searchable(),
                 TextColumn::make('first_name')->sortable()->searchable(),
                 TextColumn::make('last_name')->sortable()->searchable(),
                 TextColumn::make('cin')->sortable()->searchable(),
@@ -82,6 +81,8 @@ class PatientResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ViewAction::make(),
+
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),

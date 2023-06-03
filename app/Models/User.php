@@ -19,12 +19,13 @@ class User extends Authenticatable implements FilamentUser
      *
      * @var array<int, string>
      */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'tel'
-    ];
+    protected $guarded = [];
+    // protected $fillable = [
+    //     'name',
+    //     'email',
+    //     'password',
+    //     'tel'
+    // ];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -46,7 +47,7 @@ class User extends Authenticatable implements FilamentUser
     ];
     public function canAccessFilament(): bool
     {
-//        return $this->hasRole(['Admin', 'Major', 'Endocrinologue']);
-         return true;
+        //        return $this->hasRole(['Admin', 'Major', 'Endocrinologue']);
+        return true;
     }
 }

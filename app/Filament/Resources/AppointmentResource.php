@@ -14,6 +14,7 @@ use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\Select;
@@ -21,6 +22,7 @@ use App\Models\Patient;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Textarea;
+use Illuminate\Foundation\Auth\User as AuthUser;
 use Illuminate\Support\Carbon;
 
 class AppointmentResource extends Resource
@@ -176,7 +178,7 @@ class AppointmentResource extends Resource
     {
         $userId = Auth::id();
         $user = Auth::user();
-        if ($user->hasRole('Admin')) {
+        if ($user->hasRole('MAJOR')) {
             return parent::getEloquentQuery();
         }
         return parent::getEloquentQuery()->join('doctors', 'appointments.doctor_id', '=', 'doctors.id')

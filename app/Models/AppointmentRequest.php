@@ -7,14 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class AppointmentRequest extends Model
 {
-    protected $fillable = [
-        'patient_id',
-        'first_name',
-        'last_name',
-        'ppr',
-        'cin',
-        'num',
-    ];
+    protected $guarded = [];
 
     public function patient()
     {
