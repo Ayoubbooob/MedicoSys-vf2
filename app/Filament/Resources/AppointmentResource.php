@@ -14,6 +14,7 @@ use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\Select;
@@ -21,7 +22,11 @@ use App\Models\Patient;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Textarea;
+use Illuminate\Foundation\Auth\User as AuthUser;
 use Illuminate\Support\Carbon;
+use Filament\Tables\Columns\BadgeColumn;
+
+
 
 class AppointmentResource extends Resource
 {
@@ -34,16 +39,23 @@ class AppointmentResource extends Resource
 
         return $form
             ->schema([
-                Select::make('medical_file_id')
+                Select::make('medical_file_id')->required()
                     ->options(medical_file::all()->mapWithKeys(function ($medical_file) {
                         return [$medical_file->id => "{$medical_file->patient->first_name} {$medical_file->patient->last_name} - {$medical_file->ppr}"];
                     })),
-                Select::make('doctor_id')
+                Select::make('doctor_id')->required()
                     ->options(Doctor::all()->mapWithKeys(function ($doctor) {
                         return [$doctor->id => "{$doctor->first_name} {$doctor->last_name} - {$doctor->cin}"];
                     })),
-                DateTimePicker::make('appointment_date'),
+                DateTimePicker::make('appointment_date')->required(),
                 Textarea::make('motif'),
+//                Select::make('status')
+//                    ->options([
+//                        'en cours' => 'en cours',
+//                        'confirmé' => 'confirmé',
+//                        'annulé' => 'annulé',
+//                        'en attente' => 'en attente',
+//                    ])->default('en cours'),
                 Repeater::make('informations_supplementaires')
                     ->schema([
                         MarkdownEditor::make('informations_supplementaires')
@@ -121,6 +133,14 @@ class AppointmentResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(),
+//                BadgeColumn::make('status')
+//                    ->colors([
+////                      'primary',// => 'en cours',
+////                        'secondary' => 'confirmé',
+//                        'warning' => 'en attente',
+//                        'success' => 'confirmé',
+//                        'danger' => 'annulé',
+//                    ]),
             ])
             ->filters([
                 Tables\Filters\Filter::make('created_at')
@@ -186,7 +206,8 @@ class AppointmentResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+           // RelationManagers\PatientRelationManager::class,
+
         ];
     }
 

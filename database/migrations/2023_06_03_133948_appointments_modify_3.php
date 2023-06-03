@@ -12,8 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('appointments', function (Blueprint $table) {
-            $table->dropForeign(['patient_id']);
-            $table->dropColumn('patient_id');
+            $table->string('status')->default('en cours')->change();
         });
     }
 

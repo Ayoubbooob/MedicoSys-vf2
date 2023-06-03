@@ -11,10 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('medical_files', function (Blueprint $table) {
-            $table->string('ppr')->unique();
-            $table->json('dynamic_fields');
-            $table->dropColumn('creation_date');
+        Schema::table('appointments', function (Blueprint $table) {
+            $table->string('motif')->nullable()->change();
         });
     }
 
@@ -23,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('medical_files', function (Blueprint $table) {
-            $table->dropColumn('creation_date');
+        Schema::table('appointments', function (Blueprint $table) {
+            //
         });
     }
 };
