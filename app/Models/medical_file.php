@@ -9,23 +9,23 @@ class medical_file extends Model
 {
     use HasFactory;
 
-//    protected $fillable = ['patient_id', 'dynamic_field','creation_date'];
+    //    protected $fillable = ['patient_id', 'dynamic_field','creation_date'];
 
-//    protected $fillable = ['ppr', 'patient_id',  'antecedents', 'biometrie', 'traitement_chronique', 'vaccination', 'examen_biologiques'];
+    //    protected $fillable = ['ppr', 'patient_id',  'antecedents', 'biometrie', 'traitement_chronique', 'vaccination', 'examen_biologiques'];
 
 
-    protected $fillable = ['ppr', 'patient_id',  'dynamic_fields'];
+    protected $guarded = [];
 
 
     protected $casts = [
         'dynamic_fields' => 'array',
     ];
-//    protected $casts = [
-//        'antecedents' => 'array',
-//        'biometrie' => 'array',
-//        'vaccination' => 'array',
-//        'examen_biologiques' => 'array',
-//    ];
+    //    protected $casts = [
+    //        'antecedents' => 'array',
+    //        'biometrie' => 'array',
+    //        'vaccination' => 'array',
+    //        'examen_biologiques' => 'array',
+    //    ];
     public function patient()
     {
         return $this->belongsTo(Patient::class);

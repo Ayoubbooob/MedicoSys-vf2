@@ -196,7 +196,7 @@ class AppointmentResource extends Resource
     {
         $userId = Auth::id();
         $user = Auth::user();
-        if ($user->hasRole('Admin')) {
+        if ($user->hasRole('MAJOR')) {
             return parent::getEloquentQuery();
         }
         return parent::getEloquentQuery()->join('doctors', 'appointments.doctor_id', '=', 'doctors.id')
