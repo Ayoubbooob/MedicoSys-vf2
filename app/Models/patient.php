@@ -33,6 +33,10 @@ class patient extends Model implements Authenticatable
     {
         return $this->hasMany(appointment::class);
     }
+    public function consultations()
+    {
+        return $this->hasMany(consultation::class);
+    }
 
     public function appointmentRequests()
     {
@@ -88,43 +92,43 @@ class patient extends Model implements Authenticatable
         // Return the session lifetime for patients in minutes
         return config('session.patient_lifetime');
     }
-//    public function getAuthIdentifierName()
-//    {
-//        return 'id';
-//    }
-//
-//    public function getAuthIdentifier()
-//    {
-//        return $this->getKey();
-//    }
-//
-//    public function getAuthPassword()
-//    {
-//        return $this->password;
-//    }
-//
-//    public function getRememberToken()
-//    {
-//        return $this->remember_token;
-//    }
-//
-//    public function setRememberToken($value)
-//    {
-//        $this->remember_token = $value;
-//    }
-//
-//    public function getRememberTokenName()
-//    {
-//        return 'remember_token';
-//    }
-//
-//    /**
-//     * @return string[]
-//     */
-//    public function getFillable(): array
-//    {
-//        return $this->fillable;
-//    }
+    //    public function getAuthIdentifierName()
+    //    {
+    //        return 'id';
+    //    }
+    //
+    //    public function getAuthIdentifier()
+    //    {
+    //        return $this->getKey();
+    //    }
+    //
+    //    public function getAuthPassword()
+    //    {
+    //        return $this->password;
+    //    }
+    //
+    //    public function getRememberToken()
+    //    {
+    //        return $this->remember_token;
+    //    }
+    //
+    //    public function setRememberToken($value)
+    //    {
+    //        $this->remember_token = $value;
+    //    }
+    //
+    //    public function getRememberTokenName()
+    //    {
+    //        return 'remember_token';
+    //    }
+    //
+    //    /**
+    //     * @return string[]
+    //     */
+    //    public function getFillable(): array
+    //    {
+    //        return $this->fillable;
+    //    }
 
 
 }

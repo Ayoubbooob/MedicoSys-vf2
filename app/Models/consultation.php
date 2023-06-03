@@ -8,18 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class consultation extends Model
 {
     use HasFactory;
-    protected $fillable = [
-        'medicale_file_id',
-        'doctor_id',
-        'consultat_date',
-        'report',
+    protected $guarded = [];
+    protected $casts = [
+        'rapport_du_consultation' => 'json',
     ];
-
-    public function medicalFile()
+    public function medical_file()
     {
-        return $this->belongsTo(MedicalFile::class);
+        return $this->belongsTo(medical_file::class);
     }
-
     public function doctor()
     {
         return $this->belongsTo(Doctor::class);
