@@ -11,8 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('appointments', function (Blueprint $table) {
-            $table->string('motif')->nullable()->change();
+        Schema::table('consultations', function (Blueprint $table) {
+            $table->dropForeign(['doctor_id']);
+
+            $table->foreign('doctor_id')
+                ->references('id')
+                ->on('doctors')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
         });
     }
 
@@ -21,7 +27,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('appointments', function (Blueprint $table) {
+        Schema::table('consultations', function (Blueprint $table) {
             //
         });
     }

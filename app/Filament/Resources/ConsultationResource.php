@@ -31,15 +31,15 @@ class ConsultationResource extends Resource
     {
         return $form
             ->schema([
-                Select::make('medical_file_id')
+                Select::make('medical_file_id')->required()
                     ->options(medical_file::all()->mapWithKeys(function ($medical_file) {
                         return [$medical_file->id => "{$medical_file->patient->first_name} {$medical_file->patient->last_name} - {$medical_file->ppr}"];
                     })),
-                Select::make('doctor_id')
+                Select::make('doctor_id')->required()
                     ->options(doctor::all()->mapWithKeys(function ($doctor) {
                         return [$doctor->id => "{$doctor->first_name} {$doctor->last_name} - {$doctor->cin}"];
                     })),
-                DateTimePicker::make('consultation_date'),
+                DateTimePicker::make('consultation_date')->required(),
                 Repeater::make('rapport_du_consultation')
                     ->schema([
                         MarkdownEditor::make('rapport du consultation')

@@ -156,22 +156,22 @@ class MedicalFileResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            MedicalFileResource\RelationManagers\ConsultationsRelationManager::class
         ];
     }
-    public static function getEloquentQuery(): EloquentBuilder
-    {
-        $userId = Auth::id();
-        $user = Auth::user();
-        if ($user->hasRole('Admin')) {
-            return parent::getEloquentQuery();
-        }
-
-        return parent::getEloquentQuery()
-            ->join('appointments', 'medical_files.id', '=', 'appointments.medical_file_id')
-            ->join('doctors', 'appointments.doctor_id', '=', 'doctors.id')
-            ->where('doctors.user_id', $userId);
-    }
+//    public static function getEloquentQuery(): EloquentBuilder
+//    {
+//        $userId = Auth::id();
+//        $user = Auth::user();
+//        if ($user->hasRole('Admin')) {
+//            return parent::getEloquentQuery();
+//        }
+//
+//        return parent::getEloquentQuery()
+//            ->join('appointments', 'medical_files.id', '=', 'appointments.medical_file_id')
+//            ->join('doctors', 'appointments.doctor_id', '=', 'doctors.id')
+//            ->where('doctors.user_id', $userId);
+//    }
 
     public static function getPages(): array
     {

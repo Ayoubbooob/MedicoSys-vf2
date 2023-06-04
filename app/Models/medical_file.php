@@ -31,6 +31,11 @@ class medical_file extends Model
         return $this->belongsTo(Patient::class);
     }
 
+    public function consultations()
+    {
+        return $this->hasMany(consultation::class);
+    }
+
 
     //Accessor to decode and encode json attribute
     public function getAntecedentsAttribute($value)

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Resources\AppointmentResource\RelationManagers\PatientRelationManager;
 use Filament\Forms\Components\Repeater;
 use App\Filament\Resources\AppointmentResource\Pages;
 use App\Models\Appointment;
@@ -49,13 +50,13 @@ class AppointmentResource extends Resource
                     })),
                 DateTimePicker::make('appointment_date')->required(),
                 Textarea::make('motif'),
-//                Select::make('status')
-//                    ->options([
-//                        'en cours' => 'en cours',
-//                        'confirmé' => 'confirmé',
-//                        'annulé' => 'annulé',
-//                        'en attente' => 'en attente',
-//                    ])->default('en cours'),
+                Select::make('status')
+                    ->options([
+                        'en cours' => 'en cours',
+                        'confirmé' => 'confirmé',
+                        'annulé' => 'annulé',
+                        'en attente' => 'en attente',
+                    ])->default('en cours'),
                 Repeater::make('informations_supplementaires')
                     ->schema([
                         MarkdownEditor::make('informations_supplementaires')
@@ -94,16 +95,16 @@ class AppointmentResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
-                TextColumn::make('medical_file.patient.num')
-                    ->label('Telephone Patient')
-                    ->searchable()
-                    ->sortable()
-                    ->toggleable(),
-                TextColumn::make('medical_file.patient.cin')
-                    ->label('Cin Patient')
-                    ->searchable()
-                    ->sortable()
-                    ->toggleable(),
+//                TextColumn::make('medical_file.patient.num')
+//                    ->label('Telephone Patient')
+//                    ->searchable()
+//                    ->sortable()
+//                    ->toggleable(),
+//                TextColumn::make('medical_file.patient.cin')
+//                    ->label('Cin Patient')
+//                    ->searchable()
+//                    ->sortable()
+//                    ->toggleable(),
                 TextColumn::make('doctor.first_name')
                     ->label('Prenom Docteur')
                     ->searchable()
@@ -118,29 +119,30 @@ class AppointmentResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(),
+                BadgeColumn::make('status')
+                    ->colors([
+//                      'primary',// => 'en cours',
+//                        'secondary' => 'confirmé',
+                        'warning' => 'en attente',
+                        'success' => 'confirmé',
+                        'danger' => 'annulé',
+                    ]),
                 TextColumn::make('motif')
                     ->label('Motif')
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
-                TextColumn::make('created_at')
-                    ->label('Date de creation')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(),
-                TextColumn::make('updated_at')
-                    ->label('Date de Modification')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(),
-//                BadgeColumn::make('status')
-//                    ->colors([
-////                      'primary',// => 'en cours',
-////                        'secondary' => 'confirmé',
-//                        'warning' => 'en attente',
-//                        'success' => 'confirmé',
-//                        'danger' => 'annulé',
-//                    ]),
+//                TextColumn::make('created_at')
+//                    ->label('Date de creation')
+//                    ->dateTime()
+//                    ->sortable()
+//                    ->toggleable(),
+//                TextColumn::make('updated_at')
+//                    ->label('Date de Modification')
+//                    ->dateTime()
+//                    ->sortable()
+//                    ->toggleable(),
+
             ])
             ->filters([
                 Tables\Filters\Filter::make('created_at')
@@ -206,8 +208,8 @@ class AppointmentResource extends Resource
     public static function getRelations(): array
     {
         return [
-           // RelationManagers\PatientRelationManager::class,
-
+            //AppointmentResource\RelationManagers\PatientRelationManager::class,
+//            AppointmentResource\RelationManagers\DoctorRelationManager::class
         ];
     }
 

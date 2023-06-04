@@ -12,4 +12,6 @@ use Filament\Tables\Columns\TextColumn;
 class ViewAppointment extends ViewRecord
 {
     protected static string $resource = AppointmentResource::class;
+
+
 }
