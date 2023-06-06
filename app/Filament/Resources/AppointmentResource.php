@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use Illuminate\Support\Facades\Request;
 use Filament\Forms\Components\Repeater;
 use App\Filament\Resources\AppointmentResource\Pages;
 use App\Models\Appointment;
@@ -14,16 +15,14 @@ use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\Select;
-use App\Models\Patient;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Textarea;
-use Illuminate\Foundation\Auth\User as AuthUser;
 use Illuminate\Support\Carbon;
+
 
 class AppointmentResource extends Resource
 {
@@ -74,22 +73,22 @@ class AppointmentResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('medical_file.patient.first_name')
+                TextColumn::make('medicalFile.patient.first_name')
                     ->label('Prenom Patient')
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
-                TextColumn::make('medical_file.patient.last_name')
+                TextColumn::make('medicalFile.patient.last_name')
                     ->label('Nom Patient')
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
-                TextColumn::make('medical_file.patient.num')
+                TextColumn::make('medicalFile.patient.num')
                     ->label('Telephone Patient')
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
-                TextColumn::make('medical_file.patient.cin')
+                TextColumn::make('medicalFile.patient.cin')
                     ->label('Cin Patient')
                     ->searchable()
                     ->sortable()
@@ -174,23 +173,51 @@ class AppointmentResource extends Resource
             ]);
     }
 
+    // public static function getEloquentQuery(): Builder
+    // {
+    //     $userId = Auth::id();
+    //     $user = Auth::user();
+    //     // if ($user->hasRole('MAJOR')) {
+    //     // }
+    //     if ($user->hasRole('DOCTOR')) {
+    //         return parent::getEloquentQuery()
+    //             ->join('doctors', 'doctor_id', '=', 'doctors.id')
+    //             ->where('user_id', $userId);
+    //     }
+    //     return parent::getEloquentQuery();
+    // }
+    // public static function getEloquentQuery(): Builder
+    // {
+    //     $user = Auth::user();
+
+    //     if ($user->hasRole('DOCTOR')) {
+    //         return parent::getEloquentQuery()
+    //             ->whereHas('doctor', function ($query) use ($user) {
+    //                 $query->where('user_id', $user->id);
+    //             })
+    //             ->with(['doctor', 'medical_file.patient']);
+    //     }
+
+    //     return parent::getEloquentQuery();
+    // }
     public static function getEloquentQuery(): Builder
     {
-        $userId = Auth::id();
         $user = Auth::user();
-        if ($user->hasRole('MAJOR')) {
-            return parent::getEloquentQuery();
+
+        if ($user->hasRole('DOCTOR')) {
+            return parent::getEloquentQuery()
+                ->whereHas('doctor', function ($query) use ($user) {
+                    $query->where('user_id', $user->id);
+                })
+                ->with(['doctor', 'medicalFile.patient']);
         }
-        return parent::getEloquentQuery()->join('doctors', 'appointments.doctor_id', '=', 'doctors.id')
-            ->where('user_id', $userId);
+
+        return parent::getEloquentQuery();
     }
 
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
-    }
+
+
+
 
 
     public static function getPages(): array
@@ -200,6 +227,13 @@ class AppointmentResource extends Resource
             'create' => Pages\CreateAppointment::route('/create'),
             'edit' => Pages\EditAppointment::route('/{record}/edit'),
             'view' => Pages\ViewAppointment::route('/{record}'),
+        ];
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            //
         ];
     }
 }

@@ -2,18 +2,19 @@
 
 namespace App\Policies;
 
-use App\Models\User;
 use App\Models\medical_file;
+use App\Models\User;
+use App\Models\medicalFile;
 use Illuminate\Auth\Access\Response;
 
-class medical_file_Policy
+class MedicalFilePolicy
 {
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasRole(['MAJOR', 'DOCTOR']);
+        return $user->hasRole(['DOCTOR', 'MAJOR']);
     }
 
     /**
@@ -21,7 +22,7 @@ class medical_file_Policy
      */
     public function view(User $user, medical_file $medicalFile): bool
     {
-        return $user->hasRole(['MAJOR', 'DOCTOR']);
+        return $user->hasRole(['DOCTOR', 'MAJOR']);
     }
 
     /**
@@ -29,7 +30,7 @@ class medical_file_Policy
      */
     public function create(User $user): bool
     {
-        return $user->hasRole(['MAJOR', 'DOCTOR']);
+        return $user->hasRole('MAJOR');
     }
 
     /**
@@ -37,7 +38,7 @@ class medical_file_Policy
      */
     public function update(User $user, medical_file $medicalFile): bool
     {
-        return $user->hasRole(['MAJOR', 'DOCTOR']);
+        return $user->hasRole(['DOCTOR', 'MAJOR']);
     }
 
     /**
@@ -45,7 +46,7 @@ class medical_file_Policy
      */
     public function delete(User $user, medical_file $medicalFile): bool
     {
-        return $user->hasRole(['MAJOR', 'DOCTOR']);
+        return $user->hasRole('MAJOR');
     }
 
     /**
@@ -53,7 +54,7 @@ class medical_file_Policy
      */
     public function restore(User $user, medical_file $medicalFile): bool
     {
-        return $user->hasRole(['MAJOR', 'DOCTOR']);
+        return $user->hasRole('MAJOR');
     }
 
     /**
@@ -61,6 +62,6 @@ class medical_file_Policy
      */
     public function forceDelete(User $user, medical_file $medicalFile): bool
     {
-        return $user->hasRole(['MAJOR', 'DOCTOR']);
+        return $user->hasRole('MAJOR');
     }
 }

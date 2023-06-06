@@ -19,6 +19,7 @@ use Filament\Resources\Table;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\FileUpload;
+use Illuminate\Support\Facades\DB;
 
 class MedicalFileResource extends Resource
 {
@@ -161,17 +162,54 @@ class MedicalFileResource extends Resource
     }
     public static function getEloquentQuery(): EloquentBuilder
     {
-        $userId = Auth::id();
         $user = Auth::user();
-        if ($user->hasRole('Admin')) {
-            return parent::getEloquentQuery();
+
+        if ($user->hasRole('DOCTOR')) {
+            return parent::getEloquentQuery()
+                ->whereHas('appointments', function ($query) use ($user) {
+                    $query->whereHas('doctor', function ($query) use ($user) {
+                        $query->where('user_id', $user->id);
+                    });
+                })
+                ->with(['appointments.doctor', 'patient']);
         }
 
-        return parent::getEloquentQuery()
-            ->join('appointments', 'medical_files.id', '=', 'appointments.medical_file_id')
-            ->join('doctors', 'appointments.doctor_id', '=', 'doctors.id')
-            ->where('doctors.user_id', $userId);
+        return parent::getEloquentQuery();
     }
+
+    // public static function getEloquentQuery(): EloquentBuilder
+    // {
+    //     $user = Auth::user();
+
+    //     if ($user->hasRole('MAJOR')) {
+    //         return parent::getEloquentQuery();
+    //     }
+
+    //     return parent::getEloquentQuery()
+    //         ->whereHas('appointment', function ($query) use ($user) {
+    //             $query->where('medical_file_id', DB::raw('`medical_files`.`id`'))
+    //                 ->whereHas('doctor', function ($query) use ($user) {
+    //                     $query->where('user_id', $user->id);
+    //                 });
+    //         })
+    //         ->with(['appointments.doctor', 'medical_file.patient']);
+    // }
+
+    // public static function getEloquentQuery(): EloquentBuilder
+    // {
+    //     $user = Auth::user();
+
+    //     if ($user->hasRole('DOCTOR')) {
+    //         return parent::getEloquentQuery()
+    //             ->whereHas('doctor', function ($query) use ($user) {
+    //                 $query->where('user_id', $user->id);
+    //             })
+    //             ->with(['doctor', 'medical_file.patient']);
+    //     }
+
+    //     return parent::getEloquentQuery();
+    // }
+
 
     public static function getPages(): array
     {
