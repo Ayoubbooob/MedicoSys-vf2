@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -17,8 +18,13 @@ return new class extends Migration
             $table->float('size');
             $table->string('gender');
             $table->foreignId('patient_id')->constrained()->onDelete('cascade');
+            $table->decimal('bmi', 8, 2)->nullable();
+
             $table->timestamps();
         });
+
+        DB::statement('UPDATE i_m_c_s SET bmi = weight / (size * size)');
+
     }
 
     /**

@@ -20,6 +20,9 @@ return new class extends Migration
 //            $table->foreign('patient_id')->references('id')->on('patients')->onDelete('cascade');
             $table->foreign('doctor_id')->references('id')->on('doctors')->onDelete('cascade');
             $table->string('status');
+            $table->json('informations_supplementaires');
+//            $table->json('motif')->nullable();
+
             $table->timestamps();
         });
     }

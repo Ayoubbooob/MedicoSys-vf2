@@ -2,54 +2,83 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\AppointmentResource\RelationManagers\PatientRelationManager;
-use Filament\Forms\Components\Repeater;
 use App\Filament\Resources\AppointmentResource\Pages;
 use App\Models\Appointment;
-use Filament\Forms;
-use Illuminate\Support\Facades\Auth;
 use App\Models\doctor;
 use App\Models\medical_file;
+use Filament\Forms;
+use Filament\Forms\Components\Card;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\MarkdownEditor;
+use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
-use App\Models\User;
-use Illuminate\Database\Eloquent\Builder;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Forms\Components\Select;
-use App\Models\Patient;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\MarkdownEditor;
-use Filament\Forms\Components\Textarea;
-use Illuminate\Foundation\Auth\User as AuthUser;
-use Illuminate\Support\Carbon;
 use Filament\Tables\Columns\BadgeColumn;
+use Filament\Tables\Columns\TextColumn;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 
 
 
 class AppointmentResource extends Resource
 {
+
+    public static ?string $label='Rendez-vous'; //darurya
+
+    public static ?string $slug = '/rendez-vous';  //darurya
+
+    //public static ?string $create = 'rendez-vous';
+
+
+
+    protected static ?string $activeNavigationIcon = 'heroicon-o-calendar';
+
+
     protected static ?string $model = Appointment::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $breadcrumb = 'Rendez-vous'; // // for menu //darurya
+
+
+
+    protected static ?string $navigationLabel = 'Rendez-vous'; //side bar
+
+    protected static ?string $pluralLabel = 'Rendez-vous'; // page name // //darurya
+
+
+    //protected static ?string $pluralModelLabel = 'Rendez-vous';
+
+
 
     public static function form(Form $form): Form
     {
 
+
+//        $createdAt = Appointment::query()
+//            ->select('created_at')
+//            ->first();
+            //->get();
+
         return $form
             ->schema([
+                Card::make()
+                    ->schema([
                 Select::make('medical_file_id')->required()
                     ->options(medical_file::all()->mapWithKeys(function ($medical_file) {
-                        return [$medical_file->id => "{$medical_file->patient->first_name} {$medical_file->patient->last_name} - {$medical_file->ppr}"];
-                    })),
-                Select::make('doctor_id')->required()
+                        return [$medical_file->id => "Patient: {$medical_file->patient->first_name} {$medical_file->patient->last_name} - PPR: {$medical_file->ppr}"];
+                    })) -> label('Dossier médical'),
+                Select::make('doctor_id')->required()->label('Médecin')
                     ->options(Doctor::all()->mapWithKeys(function ($doctor) {
-                        return [$doctor->id => "{$doctor->first_name} {$doctor->last_name} - {$doctor->cin}"];
+                        return [$doctor->id => "Médecin: Dr. {$doctor->first_name} {$doctor->last_name} - Cin: {$doctor->cin}"];
                     })),
-                DateTimePicker::make('appointment_date')->required(),
-                Textarea::make('motif'),
+                DateTimePicker::make('appointment_date')->required()->label('Date Rendez-vous'),
                 Select::make('status')
                     ->options([
                         'en cours' => 'en cours',
@@ -57,6 +86,7 @@ class AppointmentResource extends Resource
                         'annulé' => 'annulé',
                         'en attente' => 'en attente',
                     ])->default('en cours'),
+                Textarea::make('motif'),
                 Repeater::make('informations_supplementaires')
                     ->schema([
                         MarkdownEditor::make('informations_supplementaires')
@@ -78,23 +108,49 @@ class AppointmentResource extends Resource
 
                     ])
 
-            ]);
+            ])->columns(2),
+
+                Card::make()
+                ->schema([
+                    Placeholder::make('created_at')->label('créé à')
+                        ->content('Avant 7 jours'),
+//                        ->content($createdAt
+//                            ? Carbon::parse($createdAt)->diffForHumans() : ''),
+                    Placeholder::make('updated_at')->label('dernière mise à jour')
+                        ->content('Hier'),
+
+                ])
+
+                //->hidden(!Route::is('view'))
+
+            ])->columns(2)
+
+            ;
     }
 
     public static function table(Table $table): Table
     {
         return $table
+
             ->columns([
                 TextColumn::make('medical_file.patient.first_name')
                     ->label('Prenom Patient')
                     ->searchable()
                     ->sortable()
-                    ->toggleable(),
+                    ->toggleable()
+                ->size('lg')
+//                    ->copyable()
+//                    ->copyMessageDuration(1500)
+                ,
                 TextColumn::make('medical_file.patient.last_name')
                     ->label('Nom Patient')
                     ->searchable()
                     ->sortable()
-                    ->toggleable(),
+                    ->toggleable()
+                    ->size('lg')
+//                    ->copyable()
+//                    ->copyMessageDuration(1500)
+                ,
 //                TextColumn::make('medical_file.patient.num')
 //                    ->label('Telephone Patient')
 //                    ->searchable()
@@ -109,17 +165,24 @@ class AppointmentResource extends Resource
                     ->label('Prenom Docteur')
                     ->searchable()
                     ->sortable()
-                    ->toggleable(),
+                    ->toggleable()->size('lg')
+//                    ->copyable()
+//                    ->copyMessageDuration(1500)
+                ,
                 TextColumn::make('doctor.last_name')
                     ->label('Nom Docteur')
                     ->sortable()
-                    ->toggleable(),
+                    ->toggleable()->size('lg'),
+//                    ->copyable()
+//                    ->copyMessageDuration(1500),
                 TextColumn::make('appointment_date')
                     ->label('Date de RDV')
                     ->dateTime()
                     ->sortable()
-                    ->toggleable(),
-                BadgeColumn::make('status')
+                    ->toggleable()->size('lg'),
+//                    ->copyable()
+//                    ->copyMessageDuration(1500),
+                BadgeColumn::make('status')->searchable()
                     ->colors([
 //                      'primary',// => 'en cours',
 //                        'secondary' => 'confirmé',
@@ -127,11 +190,11 @@ class AppointmentResource extends Resource
                         'success' => 'confirmé',
                         'danger' => 'annulé',
                     ]),
-                TextColumn::make('motif')
-                    ->label('Motif')
-                    ->searchable()
-                    ->sortable()
-                    ->toggleable(),
+//                TextColumn::make('motif')
+//                    ->label('Motif')
+//                    ->searchable()
+//                    ->sortable()
+//                    ->toggleable(),
 //                TextColumn::make('created_at')
 //                    ->label('Date de creation')
 //                    ->dateTime()
@@ -184,10 +247,12 @@ class AppointmentResource extends Resource
                         return $indicators;
                     }),
             ])
+
+
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
-                Tables\Actions\ViewAction::make(),
+                //Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ViewAction::make()->label(''),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
@@ -208,8 +273,12 @@ class AppointmentResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //AppointmentResource\RelationManagers\PatientRelationManager::class,
-//            AppointmentResource\RelationManagers\DoctorRelationManager::class
+//            AppointmentResource\RelationManagers\PatientRelationManager::class,
+            AppointmentResource\RelationManagers\DoctorRelationManager::class,
+
+            AppointmentResource\RelationManagers\MedicalFileRelationManager::class,
+
+
         ];
     }
 
