@@ -3,8 +3,10 @@
 namespace App\Filament\Resources\UserResource\Pages;
 
 use App\Filament\Resources\UserResource;
+use Filament\Notifications\Notification;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\CreateRecord;
+use Illuminate\Support\Facades\Auth;
 
 class CreateUser extends CreateRecord
 {
@@ -13,8 +15,12 @@ class CreateUser extends CreateRecord
     {
         return $this->getResource()::getUrl('index');
     }
-    protected function getCreatedNotificationTitle(): ?string
+    protected function getCreatedNotification(): ?Notification
     {
-        return 'User created';
+        return Notification::make()
+            ->success()
+            ->title('User registered')
+            ->body('The user has been created successfully.')
+            ->sendToDatabase(Auth::user());
     }
 }

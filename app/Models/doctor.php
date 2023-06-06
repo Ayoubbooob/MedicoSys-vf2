@@ -13,11 +13,15 @@ class doctor extends Model
 
     public function consultations()
     {
-        return $this->hasMany(Consultation::class);
+        return $this->hasMany(consultation::class);
     }
 
     public function appointments()
     {
-        return $this->hasMany(Appointement::class);
+        return $this->hasMany(appointment::class);
+    }
+    public function medical_file()
+    {
+        return $this->hasMany(medical_file::class);
     }
 }

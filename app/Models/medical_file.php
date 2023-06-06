@@ -20,17 +20,23 @@ class medical_file extends Model
     protected $casts = [
         'dynamic_fields' => 'array',
     ];
-    //    protected $casts = [
-    //        'antecedents' => 'array',
-    //        'biometrie' => 'array',
-    //        'vaccination' => 'array',
-    //        'examen_biologiques' => 'array',
-    //    ];
     public function patient()
     {
-        return $this->belongsTo(Patient::class);
+        return $this->belongsTo(patient::class);
     }
 
+    public function doctor()
+    {
+        return $this->belongsTo(doctor::class);
+    }
+    // public function appointment()
+    // {
+    //     return $this->belongsTo(appointment::class);
+    // }
+    public function appointments()
+    {
+        return $this->hasMany(appointment::class, 'medical_file_id');
+    }
     public function consultations()
     {
         return $this->hasMany(consultation::class);
