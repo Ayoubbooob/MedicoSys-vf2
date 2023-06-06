@@ -9,16 +9,19 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         Schema::table('patients', function (Blueprint $table) {
-            $table->string('num')->unique()->change();
-            $table->string('gender')->nullable();
-            $table->string('email')->nullable();
-            $table->string('marital_status')->nullable();
-            $table->date('birth_date')->nullable();
-            $table->dropColumn('ppr');
+            // Add the "last_imc" column
+            $table->decimal('last_imc', 8, 2)->nullable();
         });
+
+        // Update the "last_imc" column with the last recorded BMI value for each patient
+        $patients = \App\Models\Patient::all();
+        foreach ($patients as $patient) {
+            $lastImc = $patient->imcs()->latest()->value('bmi');
+            $patient->update(['last_imc' => $lastImc]);
+        }
     }
 
     /**

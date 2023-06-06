@@ -28,4 +28,15 @@ class appointment extends Model
     {
         return $this->belongsTo(doctor::class);
     }
+
+
+    public function patient()
+    {
+        return $this->belongsTo(patient::class);
+    }
+
+    public function major()
+    {
+        return $this->belongsTo(User::class, 'major_id');
+    }
 }

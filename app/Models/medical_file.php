@@ -25,6 +25,7 @@ class medical_file extends Model
         return $this->belongsTo(patient::class);
     }
 
+<<<<<<< HEAD
     public function doctor()
     {
         return $this->belongsTo(doctor::class);
@@ -37,6 +38,13 @@ class medical_file extends Model
     {
         return $this->hasMany(appointment::class, 'medical_file_id');
     }
+=======
+    public function consultations()
+    {
+        return $this->hasMany(consultation::class);
+    }
+
+>>>>>>> a1089aabfbdb3ee41210c0c63ef329691ed58692
 
     public function consultations()
     {

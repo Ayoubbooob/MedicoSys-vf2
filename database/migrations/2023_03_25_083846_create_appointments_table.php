@@ -16,9 +16,14 @@ return new class extends Migration
             $table->foreignId('medical_file_id')->unsigned();
             $table->foreignId('doctor_id')->unsigned();
             $table->dateTime('appointment_date');
-            $table->string('motif');
             $table->foreign('medical_file_id')->references('id')->on('medical_files')->onDelete('cascade');
+            $table->foreignId('doctor_id')->unsigned();
+            $table->dateTime('appointment_date');
+            $table->string('motif')->nullable();
             $table->foreign('doctor_id')->references('id')->on('doctors')->onDelete('cascade');
+            $table->string('status');
+            $table->json('informations_supplementaires');
+
             $table->timestamps();
         });
     }

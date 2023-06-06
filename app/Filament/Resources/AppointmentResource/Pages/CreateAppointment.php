@@ -29,4 +29,7 @@ class CreateAppointment extends CreateRecord
             ->send()
             ->sendToDatabase($user);
     }
+    //protected static ?string $activeNavigationIcon =
+    //protected static ?string $title = 'Détails du Rendez-vous';
+
 }

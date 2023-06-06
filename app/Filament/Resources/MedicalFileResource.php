@@ -157,7 +157,7 @@ class MedicalFileResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            MedicalFileResource\RelationManagers\ConsultationsRelationManager::class
         ];
     }
     public static function getEloquentQuery(): EloquentBuilder
@@ -176,39 +176,6 @@ class MedicalFileResource extends Resource
 
         return parent::getEloquentQuery();
     }
-
-    // public static function getEloquentQuery(): EloquentBuilder
-    // {
-    //     $user = Auth::user();
-
-    //     if ($user->hasRole('MAJOR')) {
-    //         return parent::getEloquentQuery();
-    //     }
-
-    //     return parent::getEloquentQuery()
-    //         ->whereHas('appointment', function ($query) use ($user) {
-    //             $query->where('medical_file_id', DB::raw('`medical_files`.`id`'))
-    //                 ->whereHas('doctor', function ($query) use ($user) {
-    //                     $query->where('user_id', $user->id);
-    //                 });
-    //         })
-    //         ->with(['appointments.doctor', 'medical_file.patient']);
-    // }
-
-    // public static function getEloquentQuery(): EloquentBuilder
-    // {
-    //     $user = Auth::user();
-
-    //     if ($user->hasRole('DOCTOR')) {
-    //         return parent::getEloquentQuery()
-    //             ->whereHas('doctor', function ($query) use ($user) {
-    //                 $query->where('user_id', $user->id);
-    //             })
-    //             ->with(['doctor', 'medical_file.patient']);
-    //     }
-
-    //     return parent::getEloquentQuery();
-    // }
 
 
     public static function getPages(): array
