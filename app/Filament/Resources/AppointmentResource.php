@@ -132,7 +132,7 @@ class AppointmentResource extends Resource
         return $table
 
             ->columns([
-                TextColumn::make('medicalFile.patient.first_name')
+                TextColumn::make('medical_file.patient.first_name')
                     ->label('Prenom Patient')
                     ->searchable()
                     ->sortable()
@@ -141,7 +141,7 @@ class AppointmentResource extends Resource
                 //                    ->copyable()
                 //                    ->copyMessageDuration(1500)
                 ,
-                TextColumn::make('medicalFile.patient.last_name')
+                TextColumn::make('medical_file.patient.last_name')
                     ->label('Nom Patient')
                     ->searchable()
                     ->sortable()
@@ -271,7 +271,7 @@ class AppointmentResource extends Resource
                 ->whereHas('doctor', function ($query) use ($user) {
                     $query->where('user_id', $user->id);
                 })
-                ->with(['doctor', 'medicalFile.patient']);
+                ->with(['doctor', 'medical_file.patient']);
         }
 
         return parent::getEloquentQuery();

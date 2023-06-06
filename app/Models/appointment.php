@@ -18,7 +18,7 @@ class appointment extends Model
     // {
     //     return $this->belongsTo(medical_file::class);
     // }
-    public function medicalFile()
+    public function medical_file()
     {
         return $this->belongsTo(medical_file::class, 'medical_file_id');
     }
