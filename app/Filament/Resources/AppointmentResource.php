@@ -151,16 +151,6 @@ class AppointmentResource extends Resource
 //                    ->copyable()
 //                    ->copyMessageDuration(1500)
                 ,
-//                TextColumn::make('medical_file.patient.num')
-//                    ->label('Telephone Patient')
-//                    ->searchable()
-//                    ->sortable()
-//                    ->toggleable(),
-//                TextColumn::make('medical_file.patient.cin')
-//                    ->label('Cin Patient')
-//                    ->searchable()
-//                    ->sortable()
-//                    ->toggleable(),
                 TextColumn::make('doctor.first_name')
                     ->label('Prenom Docteur')
                     ->searchable()
@@ -191,20 +181,6 @@ class AppointmentResource extends Resource
                         'danger' => 'annulé',
                     ]),
 //                TextColumn::make('motif')
-//                    ->label('Motif')
-//                    ->searchable()
-//                    ->sortable()
-//                    ->toggleable(),
-//                TextColumn::make('created_at')
-//                    ->label('Date de creation')
-//                    ->dateTime()
-//                    ->sortable()
-//                    ->toggleable(),
-//                TextColumn::make('updated_at')
-//                    ->label('Date de Modification')
-//                    ->dateTime()
-//                    ->sortable()
-//                    ->toggleable(),
 
             ])
             ->filters([
