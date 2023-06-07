@@ -19,14 +19,31 @@ use Filament\Resources\Table;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Placeholder;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class MedicalFileResource extends Resource
 {
     protected static ?string $model = medical_file::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationIcon = 'heroicon-o-document';
 
+    public static ?string $label = 'Dossier médical';
+
+    public static ?string $slug = '/dossiers-médicaux';
+
+
+    protected static ?string $activeNavigationIcon = 'heroicon-o-document';
+
+
+    protected static ?string $breadcrumb = 'Dossiers médicaux';
+
+
+
+    protected static ?string $navigationLabel = 'Dossiers médicaux'; //side bar
+
+    protected static ?string $pluralLabel = 'Dossiers médicaux';
     public static function form(Form $form): Form
     {
         return $form
@@ -35,14 +52,15 @@ class MedicalFileResource extends Resource
                     ->schema([
                         TextInput::make('ppr')->label('PPR')->required()->maxLength(255)
                             ->unique(ignorable: fn ($record) => $record),
-                        //                        ->unique(),
-                        Select::make('patient_id')
-                            ->label('Patient')
-                            ->options(patient::all()->pluck('cin', 'id')->toArray())
-                            ->required()
-                            ->reactive(),
-                        //                    DatePicker::make('creation_date')->label("Date de creation")->required(),
-
+                        // Select::make('patient_id')
+                        //     ->label('Patient')
+                        //     ->options(patient::all()->pluck('cin', 'id')->toArray())
+                        //     ->required()
+                        //     ->reactive(),
+                        Select::make('patient_id')->required()
+                            ->options(patient::all()->mapWithKeys(function ($patient) {
+                                return [$patient->id => "Patient: {$patient->first_name} {$patient->last_name} - Cin: {$patient->cin}"];
+                            }))->label('Patient concerné'),
                     ])
                     ->columns(2),
 
@@ -123,24 +141,74 @@ class MedicalFileResource extends Resource
 
 
                     ])
+                    ->columnSpan(['lg' => fn (?medical_file $record) => $record === null ? 3 : 2]),
+                Card::make()
+                    ->schema([
+                        Placeholder::make('created_at')
+                            ->label('Créé à')
+                            ->content(fn (medical_file $record): ?string => $record->created_at?->diffForHumans()),
+
+                        Placeholder::make('updated_at')
+                            ->label('Dernière mise à jour')
+                            ->content(fn (medical_file $record): ?string => $record->updated_at?->diffForHumans()),
+                    ])
+                    ->columnSpan(['lg' => 1])
+                    ->hidden(fn (?medical_file $record) => $record === null),
             ])
-            ->columns(2);
+            ->columns(3);
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                TextColumn::make('ppr')->label('PPR')->sortable()->searchable(),
-                TextColumn::make('patient.last_name')->label('Nom')->sortable()->searchable(),
-                TextColumn::make('patient.first_name')->label('Prénom')->sortable()->searchable(),
-                TextColumn::make('patient.cin')->label('CIN')->sortable()->searchable(),
-                TextColumn::make('patient.num')->label('Tel'),
-                TextColumn::make('created_at')->dateTime(),
-                TextColumn::make('updated_at')->dateTime(),
+                TextColumn::make('ppr')->label('PPR')->sortable()->searchable()->toggleable(),
+                TextColumn::make('patient.last_name')->label('Nom')->toggleable()->sortable()->searchable(),
+                TextColumn::make('patient.first_name')->label('Prénom')->toggleable()->sortable()->searchable(),
+                TextColumn::make('patient.cin')->label('CIN')->toggleable()->sortable()->searchable(),
+                TextColumn::make('patient.num')->label('Tel')->toggleable(),
+                TextColumn::make('created_at')->label('Date de création')->dateTime()->toggleable(),
+                TextColumn::make('updated_at')->label('Date de dernière modification')->dateTime()->toggleable(),
             ])
             ->filters([
-                //
+                Tables\Filters\Filter::make('created_at')
+                    ->form([
+                        DatePicker::make('créé depuis')
+                            ->placeholder(fn ($state): string => 'Dec 18, ' . now()->subYear()->format('Y')),
+                    ])
+                    ->query(function (EloquentBuilder $query, array $data): EloquentBuilder {
+                        return $query
+                            ->when(
+                                $data['créé depuis'],
+                                fn (EloquentBuilder $query, $date): EloquentBuilder => $query->whereDate('created_at', '>=', $date),
+                            );
+                    })
+                    ->indicateUsing(function (array $data): array {
+                        $indicators = [];
+                        if ($data['créé depuis'] ?? null) {
+                            $indicators['créé depuis'] = 'Doctor from ' . Carbon::parse($data['créé depuis'])->toFormattedDateString();
+                        }
+                        return $indicators;
+                    }),
+                Tables\Filters\Filter::make('updated_at')
+                    ->form([
+                        DatePicker::make('modifié depuis')
+                            ->placeholder(fn ($state): string => 'Dec 18, ' . now()->subYear()->format('Y')),
+                    ])
+                    ->query(function (EloquentBuilder $query, array $data): EloquentBuilder {
+                        return $query
+                            ->when(
+                                $data['modifié depuis'],
+                                fn (EloquentBuilder $query, $date): EloquentBuilder => $query->whereDate('updated_at', '>=', $date),
+                            );
+                    })
+                    ->indicateUsing(function (array $data): array {
+                        $indicators = [];
+                        if ($data['modifié depuis'] ?? null) {
+                            $indicators['modifié depuis'] = 'Doctor from ' . Carbon::parse($data['modifié depuis'])->toFormattedDateString();
+                        }
+                        return $indicators;
+                    }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

@@ -41,6 +41,7 @@ class AppointmentResource extends Resource
 
 
     protected static ?string $activeNavigationIcon = 'heroicon-o-calendar';
+    protected static ?string $navigationIcon = 'heroicon-o-calendar';
 
 
     protected static ?string $model = Appointment::class;
@@ -234,34 +235,6 @@ class AppointmentResource extends Resource
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
-
-    // public static function getEloquentQuery(): Builder
-    // {
-    //     $userId = Auth::id();
-    //     $user = Auth::user();
-    //     // if ($user->hasRole('MAJOR')) {
-    //     // }
-    //     if ($user->hasRole('DOCTOR')) {
-    //         return parent::getEloquentQuery()
-    //             ->join('doctors', 'doctor_id', '=', 'doctors.id')
-    //             ->where('user_id', $userId);
-    //     }
-    //     return parent::getEloquentQuery();
-    // }
-    // public static function getEloquentQuery(): Builder
-    // {
-    //     $user = Auth::user();
-
-    //     if ($user->hasRole('DOCTOR')) {
-    //         return parent::getEloquentQuery()
-    //             ->whereHas('doctor', function ($query) use ($user) {
-    //                 $query->where('user_id', $user->id);
-    //             })
-    //             ->with(['doctor', 'medical_file.patient']);
-    //     }
-
-    //     return parent::getEloquentQuery();
-    // }
     public static function getEloquentQuery(): Builder
     {
         $user = Auth::user();

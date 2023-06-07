@@ -14,7 +14,8 @@ class MedicalFilePolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasRole(['DOCTOR', 'MAJOR']);
+        return true;
+        // return $user->hasRole(['DOCTOR', 'MAJOR']);
     }
 
     /**
@@ -22,7 +23,9 @@ class MedicalFilePolicy
      */
     public function view(User $user, medical_file $medicalFile): bool
     {
-        return $user->hasRole(['DOCTOR', 'MAJOR']);
+        return true;
+
+        // return $user->hasRole(['DOCTOR', 'MAJOR']);
     }
 
     /**
@@ -30,7 +33,9 @@ class MedicalFilePolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasRole('MAJOR');
+        return true;
+
+        // return $user->hasRole('MAJOR');
     }
 
     /**
@@ -38,7 +43,9 @@ class MedicalFilePolicy
      */
     public function update(User $user, medical_file $medicalFile): bool
     {
-        return $user->hasRole(['DOCTOR', 'MAJOR']);
+        return true;
+
+        // return $user->hasRole(['DOCTOR', 'MAJOR']);
     }
 
     /**
@@ -46,7 +53,9 @@ class MedicalFilePolicy
      */
     public function delete(User $user, medical_file $medicalFile): bool
     {
-        return $user->hasRole('MAJOR');
+        return true;
+
+        // return $user->hasRole('MAJOR');
     }
 
     /**
@@ -54,7 +63,9 @@ class MedicalFilePolicy
      */
     public function restore(User $user, medical_file $medicalFile): bool
     {
-        return $user->hasRole('MAJOR');
+        return true;
+
+        // return $user->hasRole('MAJOR');
     }
 
     /**
@@ -62,6 +73,7 @@ class MedicalFilePolicy
      */
     public function forceDelete(User $user, medical_file $medicalFile): bool
     {
-        return $user->hasRole('MAJOR');
+        return true;
+        // return $user->hasRole('MAJOR');
     }
 }

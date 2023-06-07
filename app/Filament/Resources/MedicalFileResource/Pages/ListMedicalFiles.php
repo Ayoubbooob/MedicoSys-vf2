@@ -9,7 +9,12 @@ use Filament\Resources\Pages\ListRecords;
 class ListMedicalFiles extends ListRecords
 {
     protected static string $resource = MedicalFileResource::class;
-
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            MedicalFileResource\Widgets\MedicalFileStats::class,
+        ];
+    }
     protected function getActions(): array
     {
         return [
