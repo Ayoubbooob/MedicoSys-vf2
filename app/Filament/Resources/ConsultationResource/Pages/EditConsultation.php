@@ -9,6 +9,7 @@ use Filament\Resources\Pages\EditRecord;
 class EditConsultation extends EditRecord
 {
     protected static string $resource = ConsultationResource::class;
+    // protected static ?string $title = 'Détails du Consultation';
 
     protected function getActions(): array
     {

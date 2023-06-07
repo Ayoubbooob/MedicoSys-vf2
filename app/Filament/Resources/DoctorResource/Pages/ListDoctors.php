@@ -9,11 +9,18 @@ use Filament\Resources\Pages\ListRecords;
 class ListDoctors extends ListRecords
 {
     protected static string $resource = DoctorResource::class;
+    // protected static ?string $title = 'du Consultation';
 
     protected function getActions(): array
     {
         return [
             Actions\CreateAction::make(),
+        ];
+    }
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            DoctorResource\Widgets\DoctorStats::class,
         ];
     }
 }

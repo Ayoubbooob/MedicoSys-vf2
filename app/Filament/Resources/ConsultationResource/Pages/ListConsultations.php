@@ -9,7 +9,12 @@ use Filament\Resources\Pages\ListRecords;
 class ListConsultations extends ListRecords
 {
     protected static string $resource = ConsultationResource::class;
-
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            ConsultationResource\Widgets\ConsultationStats::class,
+        ];
+    }
     protected function getActions(): array
     {
         return [

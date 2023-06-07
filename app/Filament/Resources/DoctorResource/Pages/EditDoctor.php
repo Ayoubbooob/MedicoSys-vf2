@@ -9,6 +9,7 @@ use Filament\Resources\Pages\EditRecord;
 class EditDoctor extends EditRecord
 {
     protected static string $resource = DoctorResource::class;
+    protected static ?string $title = 'Editer un docteur';
 
     protected function getActions(): array
     {

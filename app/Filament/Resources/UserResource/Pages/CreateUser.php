@@ -15,12 +15,8 @@ class CreateUser extends CreateRecord
     {
         return $this->getResource()::getUrl('index');
     }
-    protected function getCreatedNotification(): ?Notification
+    protected function getSavedNotificationTitle(): ?string
     {
-        return Notification::make()
-            ->success()
-            ->title('User registered')
-            ->body('The user has been created successfully.')
-            ->sendToDatabase(Auth::user());
+        return 'Utilisateur ajouté';
     }
 }

@@ -22,6 +22,6 @@ class EditUser extends EditRecord
     }
     protected function getSavedNotificationTitle(): ?string
     {
-        return 'User updated';
+        return 'Utilisateur modifié';
     }
 }
