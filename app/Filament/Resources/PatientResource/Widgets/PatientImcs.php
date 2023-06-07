@@ -22,7 +22,7 @@ class PatientImcs extends LineChartWidget
 
         //$patientId = patient::where('id', '/patient')->pluck('id');
 
-        $patientId = Patient::where('id', Request::route('patient'))->pluck('id')->first();
+        $patientId = Patient::where('id', Request::route('patient'))->pluck('id')->first();//NULL
 
 
         //$patientId = request()->route('patient');

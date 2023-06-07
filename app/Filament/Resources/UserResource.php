@@ -28,9 +28,15 @@ use Illuminate\Support\Facades\Hash;
 
 
 class UserResource extends Resource
+
+
 {
+
+
+
+    protected static ?string $navigationGroup = 'Administration des utilisateurs';
+
     protected static ?string $model = User::class;
-    protected static ?string $navigationGroup = 'Roles And Permissions';
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
     protected static ?int $navigationSort = 1;
 

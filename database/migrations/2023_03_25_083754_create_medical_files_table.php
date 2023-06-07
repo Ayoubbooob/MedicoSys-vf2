@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('patient_id')->unsigned();
             $table->foreign('patient_id')->references('id')->on('patients')->onDelete('cascade');
             $table->string('ppr')->unique();
-            $table->json('dynamic_fields');
+            $table->json('dynamic_fields')->nullable();
             $table->timestamps();
         });
     }

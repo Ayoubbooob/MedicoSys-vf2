@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Filament\Facades\Filament;
 use Filament\Notifications\Notification;
 use Illuminate\Support\ServiceProvider;
 
@@ -10,6 +11,9 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Register any application services.
      */
+
+
+
     public function register(): void
     {
         //
@@ -23,5 +27,11 @@ class AppServiceProvider extends ServiceProvider
         // Notification::defaultSubjectRenderUsing(function ($notification) {
         //     return '[Filament] ' . $notification->subject;
         // });
+
+        Filament::registerNavigationGroups([
+            'Gestion médicale',
+            'Ressources mobiles',
+            'Administration des utilisateurs',
+        ]);
     }
 }

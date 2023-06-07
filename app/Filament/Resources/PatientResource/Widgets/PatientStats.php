@@ -26,7 +26,10 @@ class PatientStats extends BaseWidget
 
         $isIncrease = false; // Initialize the variable as false
 
-        $percentageIncrease = ($currentMonthNewPatients - $previousMonthNewPatients) / $previousMonthNewPatients * 100;
+        $percentageIncrease = 0 ;
+        if ($previousMonthNewPatients !== 0) {
+            $percentageIncrease = ($currentMonthNewPatients - $previousMonthNewPatients) / $previousMonthNewPatients * 100;
+        }
 
         $percentageIncrease = intval($percentageIncrease);
         if ($percentageIncrease > 0) {

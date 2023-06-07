@@ -37,6 +37,9 @@ class AppointmentResource extends Resource
 
     //public static ?string $create = 'rendez-vous';
 
+    protected static ?string $navigationGroup = 'Gestion médicale';
+
+
 
 
     protected static ?string $activeNavigationIcon = 'heroicon-o-calendar';

@@ -24,6 +24,9 @@ use Filament\Tables\Columns\TextColumn;
 
 class ConsultationResource extends Resource
 {
+
+    protected static ?string $navigationGroup = 'Gestion médicale';
+
     protected static ?string $model = Consultation::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-check';

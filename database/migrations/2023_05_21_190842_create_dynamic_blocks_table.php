@@ -14,8 +14,7 @@ return new class extends Migration
         Schema::create('dynamic_blocks', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->string('video_url');
-            $table->text('content');
+            $table->text('dynamic_fields');
             $table->timestamps();
         });
     }

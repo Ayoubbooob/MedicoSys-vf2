@@ -24,6 +24,9 @@ class AppointmentRequestResource extends Resource
 {
     protected static ?string $model = AppointmentRequest::class;
 
+    protected static ?string $navigationGroup = 'Ressources mobiles';
+
+
     // demandeur de rendez-vous //page title
     protected static ?string $navigationIcon = 'heroicon-s-chat-alt-2';
 

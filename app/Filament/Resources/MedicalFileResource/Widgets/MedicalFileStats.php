@@ -25,7 +25,11 @@ class MedicalFileStats extends BaseWidget
 
         $isIncrease = false; // Initialize the variable as false
 
-        $percentageIncrease = ($currentMonthNewMedicalFiles - $previousMonthNewMedicalFiles) / $previousMonthNewMedicalFiles * 100;
+        $percentageIncrease = 0 ;
+        if ($previousMonthNewMedicalFiles !== 0) {
+            $percentageIncrease = ($currentMonthNewMedicalFiles - $previousMonthNewMedicalFiles) / $previousMonthNewMedicalFiles * 100;
+        }
+       // $percentageIncrease = ($currentMonthNewMedicalFiles - $previousMonthNewMedicalFiles) / $previousMonthNewMedicalFiles * 100;
 
         $percentageIncrease = intval($percentageIncrease);
         if ($percentageIncrease > 0) {

@@ -14,15 +14,20 @@ class AppointmentIntensityChart extends LineChartWidget
 
     protected static ?int $sort = 1;
 
-    protected static ?string $heading = 'Répartition des rendez-vous par jour';
+    protected static ?string $heading = 'Répartition Rendez-vous';
 
-    public ?string $filter = 'week';
+    public ?string $filter = 'semaine';
+
+    protected static ?string $maxHeight = '225px';
+
+
+
 
     protected function getFilters(): ?array
     {
         return [
-            'week' => 'week',
-            'month' => 'month',
+            'semaine' => 'semaine',
+            'mois' => 'mois',
         ];
     }
 
@@ -31,7 +36,7 @@ class AppointmentIntensityChart extends LineChartWidget
 
         $activeFilter = $this->filter;
 
-        if($activeFilter ==='week'){
+        if($activeFilter ==='semaine'){
         $startOfWeek = Carbon::now()->startOfWeek();
         $endOfWeek = Carbon::now()->endOfWeek();
 
@@ -56,7 +61,7 @@ class AppointmentIntensityChart extends LineChartWidget
             $currentDate->addDay();
         }
 
-    } elseif ($activeFilter === 'month') {
+    } elseif ($activeFilter === 'mois') {
             for ($month = 1; $month <= 12; $month++) {
                 $startOfMonth = Carbon::create(null, $month, 1, 0, 0, 0);
                 $endOfMonth = Carbon::create(null, $month, $startOfMonth->daysInMonth, 23, 59, 59);
@@ -79,7 +84,7 @@ class AppointmentIntensityChart extends LineChartWidget
             'labels' => $labels,
             'datasets' => [
                 [
-                    'label' => 'Appointment Count',
+                    'label' => 'Nombre de rendez-vous',
                     'data' => $values,
                     'backgroundColor' => 'rgba(255, 99, 132, 0.2)',
                     'borderColor' => 'rgba(255, 99, 132, 1)',

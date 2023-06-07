@@ -9,8 +9,15 @@ use Illuminate\Support\Facades\DB;
 
 class PatientBarChart extends BarChartWidget
 {
-    protected static ?string $heading = 'Répartition des patients par genre ';
-    protected static ?int $sort = 1;
+    protected static ?string $heading = 'Répartition Genre Patients ';
+    protected static ?int $sort = 2;
+    //protected static ?string $maxHeight = '50px';
+
+    protected static ?string $maxHeight = '250px';
+
+
+    protected int | string | array $columnSpan = 'full';
+
 
     protected function getData(): array
     {
@@ -21,7 +28,7 @@ class PatientBarChart extends BarChartWidget
             ->pluck('count', 'gender')
             ->toArray();
 
-        $labels = ['Male', 'Female'];
+        $labels = ['Masculin', 'Féminin'];
         $values = [
             $genderCounts['male'] ?? 0,
             $genderCounts['female'] ?? 0,
@@ -31,7 +38,7 @@ class PatientBarChart extends BarChartWidget
             'labels' => $labels,
             'datasets' => [
                 [
-                    'label' => 'Gender',
+                    'label' => 'Nombre par genre',
                     'data' => $values,
                     'backgroundColor' => ['#36a2eb', '#ff6384'],
                 ],

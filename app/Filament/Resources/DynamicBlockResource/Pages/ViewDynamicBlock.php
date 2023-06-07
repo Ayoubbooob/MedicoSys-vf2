@@ -10,10 +10,15 @@ class ViewDynamicBlock extends ViewRecord
 {
     protected static string $resource = DynamicBlockResource::class;
 
+    protected static ?string $title = 'Ressource';
+
+    protected static ?string $breadcrumb = 'Vue';
+
+
     protected function getActions(): array
     {
         return [
-            Actions\EditAction::make(),
+            Actions\EditAction::make()->label('Modifier'),
         ];
     }
 }

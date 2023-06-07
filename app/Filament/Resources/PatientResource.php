@@ -25,6 +25,8 @@ class PatientResource extends Resource
 {
     protected static ?string $model = patient::class;
 
+    protected static ?string $navigationGroup = 'Gestion médicale';
+
     protected static ?string $navigationIcon = 'heroicon-o-user';
 
     public static ?string $label='Patient'; //darurya // button new ...

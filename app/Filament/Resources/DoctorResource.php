@@ -21,25 +21,28 @@ use Illuminate\Support\Carbon;
 
 class DoctorResource extends Resource
 {
+
+    protected static ?string $navigationGroup = 'Gestion médicale';
+
     protected static ?string $model = Doctor::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
 
-    public static ?string $label = 'Docteur';
+    public static ?string $label = 'Médecin';
 
-    public static ?string $slug = '/docteur';
+    public static ?string $slug = '/medecin';
 
 
     protected static ?string $activeNavigationIcon = 'heroicon-o-user';
 
 
-    protected static ?string $breadcrumb = 'Docteurs';
+    protected static ?string $breadcrumb = 'Médecins';
 
 
 
-    protected static ?string $navigationLabel = 'Docteurs'; //side bar
+    protected static ?string $navigationLabel = 'Médecins'; //side bar
 
-    protected static ?string $pluralLabel = 'Docteurs';
+    protected static ?string $pluralLabel = 'Médecins';
     public static function form(Form $form): Form
     {
         return $form

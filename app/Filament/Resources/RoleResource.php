@@ -21,7 +21,7 @@ use Filament\Forms\Components\Select;
 class RoleResource extends Resource
 {
     protected static ?string $model = Role::class;
-    protected static ?string $navigationGroup = 'Roles And Permissions';
+    protected static ?string $navigationGroup = 'Administration des utilisateurs';
     protected static ?string $navigationIcon = 'heroicon-o-finger-print';
     protected static ?int $navigationSort = 2;
 

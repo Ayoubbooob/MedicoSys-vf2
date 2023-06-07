@@ -9,10 +9,13 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
-        Schema::table('dynamic_blocks', function (Blueprint $table) {
-            $table->json('dynamic_fields');
+        Schema::create('dynamic_blocks', function (Blueprint $table) {
+            $table->id();
+            $table->string('title');
+            $table->json('dynamic_fields')->nullable();
+            $table->timestamps();
         });
     }
 

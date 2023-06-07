@@ -25,6 +25,8 @@ class DynamicBlockResource extends Resource
     protected static ?string $model = DynamicBlock::class;
 
 
+    protected static ?string $navigationGroup = 'Ressources mobiles';
+
     //Ressources sur l'obésité , menu section
     //"Gestion des blocs d'informations" ou "Création de blocs d'informations
 
@@ -59,9 +61,9 @@ class DynamicBlockResource extends Resource
 //                        Textarea::make('content')->label('Contenu du block')->required(),
 
 
-                        Card::make()->label("Ressource")
+                        Card::make()->label("Ressources")
                             ->schema([
-                                Builder::make('dynamic_fields')->label('Ressource')
+                                Builder::make('dynamic_fields')->label('Ressources')
                                     ->blocks([
 
                                         Builder\Block::make('texte')->label('Texte')
@@ -71,26 +73,30 @@ class DynamicBlockResource extends Resource
                                                     ->label('Contenu de la ressource')
                                             ]),
 
-                                        Builder\Block::make('vidéos_associées')->label('Vidéos associées')
+                                        Builder\Block::make('videos_associees')->label('Vidéos associées')
                                             ->schema([
-                                                FileUpload::make('Vidéos_associées')
-                                                    ->label('Vidéos associées')
+                                                FileUpload::make('Videos_associees')
+                                                    ->label('Vidéos associées')->acceptedFileTypes($types = [
+                                                        'video/mp4',
+                                                        'video/quicktime',
+                                                        'video/x-msvideo',
+                                                    ])
                                                     ->multiple(),
 
                                             ]),
 
-                                        Builder\Block::make('Images associées')->label('Images associées')
+                                        Builder\Block::make('Images associees')->label('Images associées')
                                             ->schema([
-                                                FileUpload::make('Images_associées')
+                                                FileUpload::make('Images_associees')
                                                     ->label('Images associées')
                                                     ->image()->multiple(),
 
                                             ]),
-                                        Builder\Block::make('Lien_vidéo')->label('Lien vidéo')
+                                        Builder\Block::make('Lien_video')->label('Lien vidéo')
                                             //                            ->statePath('antecedents')
                                             ->schema([
 
-                                                TextInput::make('Lien_vidéo')->label('Lien vidéo')->url(),
+                                                TextInput::make('Lien_video')->label('Lien vidéo')->url(),
 
                                             ]),
 
@@ -104,17 +110,21 @@ class DynamicBlockResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('id')->sortable(),
-                TextColumn::make('title')->label('Titre du block')->sortable()->searchable(),
-                TextColumn::make('video_url')->label('Lien de la video')->sortable()->searchable(),
+                TextColumn::make('title')->label('Intitulé')->sortable()->searchable()->toggleable(),
+                TextColumn::make('created_at')->label('Date de création')->dateTime()->toggleable(),
+                TextColumn::make('updated_at')->label('Date de dernière modification')->dateTime()->toggleable(),
+
+
+//                TextColumn::make('title')->label('Titre du block')->sortable()->searchable(),
+//                TextColumn::make('video_url')->label('Lien de la video')->sortable()->searchable(),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
-                Tables\Actions\ViewAction::make(),
+                Tables\Actions\EditAction::make()->label('Modifier'),
+                //Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ViewAction::make()->label(''),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
@@ -134,6 +144,7 @@ class DynamicBlockResource extends Resource
             'index' => Pages\ListDynamicBlocks::route('/'),
             'create' => Pages\CreateDynamicBlock::route('/create'),
             'edit' => Pages\EditDynamicBlock::route('/{record}/edit'),
+            'view' => Pages\ViewDynamicBlock::route('/{record}'),
         ];
     }
 }

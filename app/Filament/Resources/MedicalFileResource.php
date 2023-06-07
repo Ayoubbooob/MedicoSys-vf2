@@ -27,6 +27,8 @@ class MedicalFileResource extends Resource
 {
     protected static ?string $model = medical_file::class;
 
+    protected static ?string $navigationGroup = 'Gestion médicale';
+
     protected static ?string $navigationIcon = 'heroicon-o-document';
 
     public static ?string $label = 'Dossier médical';

@@ -24,8 +24,10 @@ class ConsultationStats extends BaseWidget
 
         $isIncrease = false; // Initialize the variable as false
 
-        $percentageIncrease = ($currentMonthNewConsultations - $previousMonthNewConsultations) / $previousMonthNewConsultations * 100;
-
+        $percentageIncrease = 0;
+        if($previousMonthNewConsultations !==0) {
+            $percentageIncrease = ($currentMonthNewConsultations - $previousMonthNewConsultations) / $previousMonthNewConsultations * 100;
+        }
         $percentageIncrease = intval($percentageIncrease);
         if ($percentageIncrease > 0) {
             $isIncrease = true; // Set to true if there is an increase

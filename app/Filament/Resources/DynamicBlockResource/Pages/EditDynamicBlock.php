@@ -10,10 +10,14 @@ class EditDynamicBlock extends EditRecord
 {
     protected static string $resource = DynamicBlockResource::class;
 
+    protected static ?string $title = 'Modifier Ressource';
+
+    protected static ?string $breadcrumb = 'Éditer';
+
     protected function getActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            Actions\DeleteAction::make()->label('Supprimer'),
         ];
     }
 }

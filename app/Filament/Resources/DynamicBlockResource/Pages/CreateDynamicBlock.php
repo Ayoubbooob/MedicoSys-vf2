@@ -9,4 +9,9 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateDynamicBlock extends CreateRecord
 {
     protected static string $resource = DynamicBlockResource::class;
+
+
+    protected static ?string $title = 'Créer Ressource';
+
+    protected static ?string $breadcrumb = 'Créer';
 }

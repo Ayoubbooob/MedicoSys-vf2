@@ -9,8 +9,12 @@ use Illuminate\Support\Facades\DB;
 
 class AppointmentsByDoctor extends BarChartWidget
 {
-    protected static ?string $heading = 'Chart';
-    protected static ?int $sort = 2;
+    protected static ?string $heading = 'Répartition Rendez-vous par médecin';
+    protected static ?int $sort =1;
+    protected static ?string $maxHeight = '360px';
+
+
+
     public ?int $doctorId = 1;
 
 
@@ -44,7 +48,7 @@ class AppointmentsByDoctor extends BarChartWidget
             'labels' => $labels,
             'datasets' => [
                 [
-                    'label' => 'Number of Appointments',
+                    'label' => 'Médecins',
                     'data' => $values,
                     'backgroundColor' => 'rgba(54, 162, 235, 0.5)',
                     'borderColor' => 'rgba(54, 162, 235, 1)',

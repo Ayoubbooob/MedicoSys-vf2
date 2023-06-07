@@ -9,9 +9,15 @@ use Illuminate\Support\Facades\DB;
 
 class PatientChart extends DoughnutChartWidget
 {
-    protected static ?int $sort = 1;
+    protected static ?int $sort = 2;
 
-    protected static ?string $heading = 'Répartition des patients par situation familiale';
+
+    protected static ?string $heading = 'Situation Familiale Patients';
+
+    //protected static ?string $maxHeight = '225px';
+
+
+
 
     protected function getData(): array
     {
@@ -22,7 +28,7 @@ class PatientChart extends DoughnutChartWidget
             ->pluck('count', 'marital_status')
             ->toArray();
 
-        $labels = ['Veuf', 'Divorcé', 'Marié', 'Célibataire'];
+        $labels = ['Veuf(ve)', 'Divorcé(e)', 'Marié(e)', 'Célibataire'];
         $values = [
             $maritalStatusCounts['veuf'] ?? 0,
             $maritalStatusCounts['divorcé'] ?? 0,

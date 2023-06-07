@@ -7,6 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class DynamicBlock extends Model
 {
-    protected $fillable = ['title', 'video_url', 'content'];
+//    protected $fillable = ['title', 'dynamic_fields'];
+
+    protected $guarded = [];
+
+
+    protected $casts = [
+        'dynamic_fields' => 'array',
+    ];
 
 }
