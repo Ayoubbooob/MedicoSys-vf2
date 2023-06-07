@@ -14,6 +14,8 @@ class PatientStats extends BaseWidget
     protected function getCards(): array
     {
 
+        $lastImcAverage = round(Patient::avg('last_imc'), 2);
+
         $oneMonthAgo = Carbon::now()->subMonth();
 
         $currentMonthStart = Carbon::now()->startOfMonth();
@@ -40,9 +42,7 @@ class PatientStats extends BaseWidget
         ->descriptionIcon($isIncrease ? 'heroicon-s-trending-up' : 'heroicon-s-trending-down'),
 
 
-            Card::make('Rendez-vous annulés', appointment::where('status', 'annulé')->count())
-                ->color('danger')
-                ->chart([2, 10, 3, 12, 1, 14, 10, 1, 2, 10])
+            Card::make('Moyenne IMC', $lastImcAverage)
         ];
     }
 }

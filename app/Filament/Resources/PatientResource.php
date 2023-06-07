@@ -130,7 +130,7 @@ class PatientResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            PatientResource\RelationManagers\MedicalFileRelationManager::class,
         ];
     }
 

@@ -4,9 +4,13 @@ namespace App\Filament\Resources\PatientResource\Widgets;
 
 use App\Models\appointment;
 use App\Models\IMC;
+use App\Models\patient;
 use Carbon\Carbon;
 use Filament\Widgets\LineChartWidget;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\Route;
 
 class PatientImcs extends LineChartWidget
 {
@@ -14,11 +18,19 @@ class PatientImcs extends LineChartWidget
 
     protected function getData(): array
     {
-        $patientId = request()->route('patient');
+        //$patientId = $this->getPatientId();
 
-        $imcs = Imc::where('patient_id', $patientId)
+        //$patientId = patient::where('id', '/patient')->pluck('id');
+
+        $patientId = Patient::where('id', Request::route('patient'))->pluck('id')->first();
+
+
+        //$patientId = request()->route('patient');
+        var_dump($patientId);
+        $imcs = Imc::where('patient_id',$patientId)
             ->orderBy('created_at')
             ->get();
+
 
         $labels = $imcs->pluck('created_at')->map(function ($dateTime) {
             return substr($dateTime, 0, 10); // Extract only the date portion (YYYY-MM-DD)

@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('ppr');
             $table->string('cin');
             $table->string('num');
+            $table->string('motif')->nullable();
+            $table->string('status')->default('en cours');
             $table->timestamps();
 
             $table->foreign('patient_id')->references('id')->on('patients')->onDelete('cascade');

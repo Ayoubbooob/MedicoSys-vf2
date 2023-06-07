@@ -2,11 +2,16 @@
 
 namespace App\Filament\Resources;
 
+
+use Filament\Forms\Components\Builder;
 use App\Filament\Resources\DynamicBlockResource\Pages;
 use App\Filament\Resources\DynamicBlockResource\RelationManagers;
 use App\Models\DynamicBlock;
 use Filament\Forms;
 use Filament\Forms\Components\Card;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Form;
@@ -14,15 +19,34 @@ use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Facades\Hash;
 
 class DynamicBlockResource extends Resource
 {
     protected static ?string $model = DynamicBlock::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+
+    //Ressources sur l'obésité , menu section
+    //"Gestion des blocs d'informations" ou "Création de blocs d'informations
+
+    // demandeur de rendez-vous //page title
+    protected static ?string $navigationIcon = 'heroicon-s-collection';
+
+    public static ?string $label='Ressources'; //darurya // button new ...
+
+    public static ?string $slug = '/resource-obesite';  //darurya
+
+    protected static ?string $activeNavigationIcon = 'heroicon-s-collection';
+
+
+
+    protected static ?string $breadcrumb = 'Ressources Obésité'; // // for menu //darurya
+
+
+
+    protected static ?string $navigationLabel = 'Ressources Obésité'; //side bar
+
+    protected static ?string $pluralLabel = 'Ressources Obésité'; // page name // //darurya
+
 
     public static function form(Form $form): Form
     {
@@ -30,11 +54,50 @@ class DynamicBlockResource extends Resource
             ->schema([
                 Card::make()
                     ->schema([
-                        TextInput::make('title')->label('Titre du block')->required()->maxLength(255),
-                        TextInput::make('video_url')->label('Lien de la video')->required(),
-                        Textarea::make('content')->label('Contenu du block')->required(),
+                        TextInput::make('title')->label('Titre')->required()->maxLength(255),
+//                        TextInput::make('video_url')->label('Video')->required(),
+//                        Textarea::make('content')->label('Contenu du block')->required(),
+
+
+                        Card::make()->label("Ressource")
+                            ->schema([
+                                Builder::make('dynamic_fields')->label('Ressource')
+                                    ->blocks([
+
+                                        Builder\Block::make('texte')->label('Texte')
+
+                                            ->schema([
+                                                MarkdownEditor::make('contenu')
+                                                    ->label('Contenu de la ressource')
+                                            ]),
+
+                                        Builder\Block::make('vidéos_associées')->label('Vidéos associées')
+                                            ->schema([
+                                                FileUpload::make('Vidéos_associées')
+                                                    ->label('Vidéos associées')
+                                                    ->multiple(),
+
+                                            ]),
+
+                                        Builder\Block::make('Images associées')->label('Images associées')
+                                            ->schema([
+                                                FileUpload::make('Images_associées')
+                                                    ->label('Images associées')
+                                                    ->image()->multiple(),
+
+                                            ]),
+                                        Builder\Block::make('Lien_vidéo')->label('Lien vidéo')
+                                            //                            ->statePath('antecedents')
+                                            ->schema([
+
+                                                TextInput::make('Lien_vidéo')->label('Lien vidéo')->url(),
+
+                                            ]),
+
+
+                            ])
                         ])
-            ]);
+            ]) ]);
     }
 
     public static function table(Table $table): Table

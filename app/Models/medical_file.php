@@ -35,7 +35,7 @@ class medical_file extends Model
     // }
     public function appointments()
     {
-        return $this->hasMany(appointment::class, 'medical_file_id');
+        return $this->hasMany(appointment::class);
     }
     public function consultations()
     {

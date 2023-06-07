@@ -29,6 +29,14 @@ class patient extends Model implements Authenticatable
         return $this->first_name . ' ' . $this->last_name . ' ' . $this->cin;
     }
 
+
+
+    public function medical_file()
+    {
+        return $this->hasOne(medical_file::class);
+    }
+
+
     public function appointments()
     {
         return $this->hasMany(appointment::class);
