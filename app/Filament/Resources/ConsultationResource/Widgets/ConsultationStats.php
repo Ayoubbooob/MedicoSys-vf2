@@ -39,9 +39,7 @@ class ConsultationStats extends BaseWidget
                 ->chart([2, 10, 3, 12, 1, 14, 10, 1, 2, 10])
                 ->description($isIncrease ? 'Une augmentation de ' . $percentageIncrease . '%' : 'Une diminution de ' . abs($percentageIncrease) . '%')
                 ->descriptionIcon($isIncrease ? 'heroicon-s-trending-up' : 'heroicon-s-trending-down'),
-            Card::make('Rendez-vous annulés', appointment::where('status', 'annulé')->count())
-                ->color('danger')
-                ->chart([2, 10, 3, 12, 1, 14, 10, 1, 2, 10])
+
         ];
     }
 }

@@ -14,12 +14,17 @@ use Illuminate\Support\Facades\Route;
 
 class PatientImcs extends LineChartWidget
 {
-    protected static ?string $heading = 'Chart';
+    protected static ?string $heading = 'Évolution de l\'IMC du patient';
+
+    protected int | string | array $columnSpan = 'full';
+
+
+    protected static ?string $maxHeight = '300px';
+
 
     protected function getData(): array
     {
         $patientId = 5;
-        var_dump($patientId);
         $imcs = Imc::where('patient_id',  $patientId)
             ->orderBy('created_at')
             ->get();
@@ -35,7 +40,7 @@ class PatientImcs extends LineChartWidget
             'labels' => $labels,
             'datasets' => [
                 [
-                    'label' => 'Avancement du IMC du patient',
+                    'label' => 'IMC du patient au fil du temps',
                     'data' => $values,
                     'backgroundColor' => 'rgba(255, 99, 132, 0.2)',
                     'borderColor' => 'rgba(255, 99, 132, 1)',

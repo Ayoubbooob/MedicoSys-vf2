@@ -34,6 +34,7 @@ class UserResource extends Resource
 
 
 
+
     protected static ?string $navigationGroup = 'Administration des utilisateurs';
 
     protected static ?string $model = User::class;
