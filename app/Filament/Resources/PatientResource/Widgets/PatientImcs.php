@@ -18,16 +18,9 @@ class PatientImcs extends LineChartWidget
 
     protected function getData(): array
     {
-        //$patientId = $this->getPatientId();
-
-        //$patientId = patient::where('id', '/patient')->pluck('id');
-
-        $patientId = Patient::where('id', Request::route('patient'))->pluck('id')->first();//NULL
-
-
-        //$patientId = request()->route('patient');
+        $patientId = 5;
         var_dump($patientId);
-        $imcs = Imc::where('patient_id',$patientId)
+        $imcs = Imc::where('patient_id',  $patientId)
             ->orderBy('created_at')
             ->get();
 

@@ -2,11 +2,12 @@
 
 namespace App\Filament\Resources;
 
-
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Filament\Forms\Components\Builder;
 use App\Filament\Resources\DynamicBlockResource\Pages;
 use App\Filament\Resources\DynamicBlockResource\RelationManagers;
 use App\Models\DynamicBlock;
+use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\DatePicker;
@@ -33,7 +34,7 @@ class DynamicBlockResource extends Resource
     // demandeur de rendez-vous //page title
     protected static ?string $navigationIcon = 'heroicon-s-collection';
 
-    public static ?string $label='Ressources'; //darurya // button new ...
+    public static ?string $label = 'Ressources'; //darurya // button new ...
 
     public static ?string $slug = '/resource-obesite';  //darurya
 
@@ -57,10 +58,6 @@ class DynamicBlockResource extends Resource
                 Card::make()
                     ->schema([
                         TextInput::make('title')->label('Titre')->required()->maxLength(255),
-//                        TextInput::make('video_url')->label('Video')->required(),
-//                        Textarea::make('content')->label('Contenu du block')->required(),
-
-
                         Card::make()->label("Ressources")
                             ->schema([
                                 Builder::make('dynamic_fields')->label('Ressources')
@@ -101,9 +98,23 @@ class DynamicBlockResource extends Resource
                                             ]),
 
 
+                                    ])
                             ])
-                        ])
-            ]) ]);
+                    ])->columnSpan(['lg' => fn (?DynamicBlock $record) => $record === null ? 3 : 2]),
+                Forms\Components\Card::make()
+                    ->schema([
+                        Forms\Components\Placeholder::make('created_at')
+                            ->label('Créé à')
+                            ->content(fn (DynamicBlock $record): ?string => $record->created_at?->diffForHumans()),
+
+                        Forms\Components\Placeholder::make('updated_at')
+                            ->label('Dernière mise à jour')
+                            ->content(fn (DynamicBlock $record): ?string => $record->updated_at?->diffForHumans()),
+                    ])
+                    ->columnSpan(['lg' => 1])
+                    ->hidden(fn (?DynamicBlock $record) => $record === null),
+            ])
+            ->columns(3);
     }
 
     public static function table(Table $table): Table
@@ -113,13 +124,46 @@ class DynamicBlockResource extends Resource
                 TextColumn::make('title')->label('Intitulé')->sortable()->searchable()->toggleable(),
                 TextColumn::make('created_at')->label('Date de création')->dateTime()->toggleable(),
                 TextColumn::make('updated_at')->label('Date de dernière modification')->dateTime()->toggleable(),
-
-
-//                TextColumn::make('title')->label('Titre du block')->sortable()->searchable(),
-//                TextColumn::make('video_url')->label('Lien de la video')->sortable()->searchable(),
             ])
             ->filters([
-                //
+                Tables\Filters\Filter::make('created_at')
+                    ->form([
+                        DatePicker::make('créé depuis')
+                            ->placeholder(fn ($state): string => 'Dec 18, ' . now()->subYear()->format('Y')),
+                    ])
+                    ->query(function (EloquentBuilder $query, array $data): EloquentBuilder {
+                        return $query
+                            ->when(
+                                $data['créé depuis'],
+                                fn (EloquentBuilder $query, $date): EloquentBuilder => $query->whereDate('created_at', '>=', $date),
+                            );
+                    })
+                    ->indicateUsing(function (array $data): array {
+                        $indicators = [];
+                        if ($data['créé depuis'] ?? null) {
+                            $indicators['créé depuis'] = 'DynamicBlock from ' . Carbon::parse($data['créé depuis'])->toFormattedDateString();
+                        }
+                        return $indicators;
+                    }),
+                Tables\Filters\Filter::make('updated_at')
+                    ->form([
+                        DatePicker::make('modifié depuis')
+                            ->placeholder(fn ($state): string => 'Dec 18, ' . now()->subYear()->format('Y')),
+                    ])
+                    ->query(function (EloquentBuilder $query, array $data): EloquentBuilder {
+                        return $query
+                            ->when(
+                                $data['modifié depuis'],
+                                fn (EloquentBuilder $query, $date): EloquentBuilder => $query->whereDate('updated_at', '>=', $date),
+                            );
+                    })
+                    ->indicateUsing(function (array $data): array {
+                        $indicators = [];
+                        if ($data['modifié depuis'] ?? null) {
+                            $indicators['modifié depuis'] = 'DynamicBlock from ' . Carbon::parse($data['modifié depuis'])->toFormattedDateString();
+                        }
+                        return $indicators;
+                    }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()->label('Modifier'),

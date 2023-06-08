@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\AppointmentRequestResource\Pages;
 use App\Filament\Resources\AppointmentRequestResource\RelationManagers;
 use App\Models\AppointmentRequest;
+use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\Placeholder;
@@ -30,7 +31,7 @@ class AppointmentRequestResource extends Resource
     // demandeur de rendez-vous //page title
     protected static ?string $navigationIcon = 'heroicon-s-chat-alt-2';
 
-    public static ?string $label='Demandes de rendez-vous'; //darurya // button new ...
+    public static ?string $label = 'Demandes de rendez-vous'; //darurya // button new ...
 
     public static ?string $slug = '/demande-rdv';  //darurya
 
@@ -56,49 +57,48 @@ class AppointmentRequestResource extends Resource
         return $form
             ->schema([
                 Card::make()
-                ->schema([
-                TextInput::make('first_name')->label('Prénom')->disabled(),
-                    TextInput::make('last_name')->label('Nom')->disabled(),
-                    TextInput::make('cin')->disabled(),
-                    TextInput::make('ppr')->disabled(),
-                    TextInput::make('num')->label('Tel')->disabled(),
-                    Select::make('status')
-                        ->options([
-                            'en cours' => 'en cours',
-                            'confirmée' => 'confirmée',
-                            'refusée' => 'refusée',
-                            'en attente' => 'en attente'
-                        ])->default('en cours')->autofocus(),
-               Textarea::make('motif')->disabled(),
-            ])->columns(2),
-
-                Card::make()
                     ->schema([
-                        Placeholder::make('created_at')->label('créé à')
-                            ->content('Avant 7 jours'),
-                        //                        ->content($createdAt
-                        //                            ? Carbon::parse($createdAt)->diffForHumans() : ''),
-                        Placeholder::make('updated_at')->label('dernière mise à jour')
-                            ->content('Hier'),
+                        TextInput::make('first_name')->label('Prénom')->disabled(),
+                        TextInput::make('last_name')->label('Nom')->disabled(),
+                        TextInput::make('cin')->disabled(),
+                        TextInput::make('ppr')->disabled(),
+                        TextInput::make('num')->label('Tel')->disabled(),
+                        Select::make('status')
+                            ->options([
+                                'en cours' => 'en cours',
+                                'confirmée' => 'confirmée',
+                                'refusée' => 'refusée',
+                                'en attente' => 'en attente'
+                            ])->default('en cours')->autofocus(),
+                        Textarea::make('motif')->disabled(),
+                    ])->columnSpan(['lg' => fn (?AppointmentRequest $record) => $record === null ? 3 : 2]),
+                Forms\Components\Card::make()
+                    ->schema([
+                        Forms\Components\Placeholder::make('created_at')
+                            ->label('Créé à')
+                            ->content(fn (AppointmentRequest $record): ?string => $record->created_at?->diffForHumans()),
 
+                        Forms\Components\Placeholder::make('updated_at')
+                            ->label('Dernière mise à jour')
+                            ->content(fn (AppointmentRequest $record): ?string => $record->updated_at?->diffForHumans()),
                     ])
-
-            ])->columns(2);
+                    ->columnSpan(['lg' => 1])
+                    ->hidden(fn (?AppointmentRequest $record) => $record === null),
+            ])
+            ->columns(3);
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                TextColumn::make('first_name')->label('Prénom')->sortable()->searchable(),
-                TextColumn::make('last_name')->label('Nom')->sortable()->searchable(),
-                TextColumn::make('cin')->sortable()->searchable(),
-                TextColumn::make('ppr')->sortable()->searchable(),
-                TextColumn::make('num')->label('Tel')->sortable(),
-                BadgeColumn::make('status')->searchable()
+                TextColumn::make('first_name')->label('Prénom')->sortable()->searchable()->toggleable(),
+                TextColumn::make('last_name')->label('Nom')->sortable()->searchable()->toggleable(),
+                TextColumn::make('cin')->sortable()->searchable()->toggleable(),
+                TextColumn::make('ppr')->sortable()->searchable()->toggleable(),
+                TextColumn::make('num')->label('Tel')->sortable()->toggleable(),
+                BadgeColumn::make('status')->searchable()->toggleable()
                     ->colors([
-                        //                      'primary',// => 'en cours',
-                        //                        'secondary' => 'confirmé',
                         'warning' => 'en attente',
                         'success' => 'confirmée',
                         'danger' => 'refusée',
@@ -107,7 +107,44 @@ class AppointmentRequestResource extends Resource
                 TextColumn::make('created_at')->label("Date de la demande")->dateTime()->sortable(),
             ])
             ->filters([
-                //
+                Tables\Filters\Filter::make('created_at')
+                    ->form([
+                        Forms\Components\DatePicker::make('created_from')
+                            ->placeholder(fn ($state): string => 'Dec 18, ' . now()->subYear()->format('Y')),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['created_from'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                            );
+                    })
+                    ->indicateUsing(function (array $data): array {
+                        $indicators = [];
+                        if ($data['created_from'] ?? null) {
+                            $indicators['created_from'] = 'AppointmentRequest from ' . Carbon::parse($data['created_from'])->toFormattedDateString();
+                        }
+                        return $indicators;
+                    }),
+                Tables\Filters\Filter::make('updated_at')
+                    ->form([
+                        Forms\Components\DatePicker::make('updated_from')
+                            ->placeholder(fn ($state): string => 'Dec 18, ' . now()->subYear()->format('Y')),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['updated_from'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('updated_at', '>=', $date),
+                            );
+                    })
+                    ->indicateUsing(function (array $data): array {
+                        $indicators = [];
+                        if ($data['updated_from'] ?? null) {
+                            $indicators['updated_from'] = 'AppointmentRequest from ' . Carbon::parse($data['updated_from'])->toFormattedDateString();
+                        }
+                        return $indicators;
+                    }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

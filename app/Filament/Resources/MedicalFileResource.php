@@ -188,7 +188,7 @@ class MedicalFileResource extends Resource
                     ->indicateUsing(function (array $data): array {
                         $indicators = [];
                         if ($data['créé depuis'] ?? null) {
-                            $indicators['créé depuis'] = 'Doctor from ' . Carbon::parse($data['créé depuis'])->toFormattedDateString();
+                            $indicators['créé depuis'] = 'medical_file from ' . Carbon::parse($data['créé depuis'])->toFormattedDateString();
                         }
                         return $indicators;
                     }),
@@ -207,7 +207,7 @@ class MedicalFileResource extends Resource
                     ->indicateUsing(function (array $data): array {
                         $indicators = [];
                         if ($data['modifié depuis'] ?? null) {
-                            $indicators['modifié depuis'] = 'Doctor from ' . Carbon::parse($data['modifié depuis'])->toFormattedDateString();
+                            $indicators['modifié depuis'] = 'medical_file from ' . Carbon::parse($data['modifié depuis'])->toFormattedDateString();
                         }
                         return $indicators;
                     }),

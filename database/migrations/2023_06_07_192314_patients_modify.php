@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('appointment_requests', function (Blueprint $table) {
-            $table->string('motif')->nullable();
-            $table->string('status')->default('en cours');
+        Schema::table('patients', function (Blueprint $table) {
+            $table->string('image')->nullable();
         });
     }
 
@@ -22,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('appointment_requests', function (Blueprint $table) {
+        Schema::table('patients', function (Blueprint $table) {
             //
         });
     }

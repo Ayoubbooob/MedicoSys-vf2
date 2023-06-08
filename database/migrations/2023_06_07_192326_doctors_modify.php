@@ -9,13 +9,10 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('dynamic_blocks', function (Blueprint $table) {
-            $table->id();
-            $table->string('title');
-            $table->json('dynamic_fields')->nullable();
-            $table->timestamps();
+        Schema::table('doctors', function (Blueprint $table) {
+            $table->string('image')->nullable();
         });
     }
 
@@ -24,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('dynamic_blocks', function (Blueprint $table) {
+        Schema::table('doctors', function (Blueprint $table) {
             //
         });
     }

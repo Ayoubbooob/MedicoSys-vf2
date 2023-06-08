@@ -10,6 +10,7 @@ use App\Models\Doctor;
 use App\Models\medical_file;
 use App\Models\User;
 use Filament\Forms;
+use Filament\Forms\Components\FileUpload;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
@@ -57,6 +58,9 @@ class DoctorResource extends Resource
                         TextInput::make('last_name')->label('Nom du Docteur'),
                         TextInput::make('speciality')->label('Spécialité'),
                         TextInput::make('cin')->label('Cin'),
+                        FileUpload::make('image')
+                            ->label('Image')
+                            ->image(),
                     ])
                     ->columnSpan(['lg' => fn (?Doctor $record) => $record === null ? 3 : 2]),
                 Forms\Components\Card::make()
@@ -79,6 +83,8 @@ class DoctorResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\ImageColumn::make('image')
+                    ->label('Image'),
                 TextColumn::make('first_name')->label('Prénom')->sortable()->searchable()
                     ->toggleable(),
                 TextColumn::make('last_name')->label('Nom')->sortable()->searchable()

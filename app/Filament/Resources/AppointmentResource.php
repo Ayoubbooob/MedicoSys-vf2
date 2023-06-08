@@ -24,6 +24,7 @@ use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 
 
 
@@ -37,13 +38,10 @@ class AppointmentResource extends Resource
 
     //public static ?string $create = 'rendez-vous';
 
-    protected static ?string $navigationGroup = 'Gestion médicale';
-
-
 
 
     protected static ?string $activeNavigationIcon = 'heroicon-o-calendar';
-    protected static ?string $navigationIcon = 'heroicon-o-calendar';
+    protected static ?string $navigationIcon = 'heroicon-o-users';
 
 
     protected static ?string $model = Appointment::class;
@@ -112,22 +110,22 @@ class AppointmentResource extends Resource
 
                             ])
 
-                    ])->columns(2),
-
-                Card::make()
-                    ->schema([
-                        Placeholder::make('created_at')->label('créé à')
-                            ->content('Avant 7 jours'),
-                        //                        ->content($createdAt
-                        //                            ? Carbon::parse($createdAt)->diffForHumans() : ''),
-                        Placeholder::make('updated_at')->label('dernière mise à jour')
-                            ->content('Hier'),
-
                     ])
+                    ->columnSpan(['lg' => fn (?Appointment $record) => $record === null ? 3 : 2]),
+                Forms\Components\Card::make()
+                    ->schema([
+                        Forms\Components\Placeholder::make('created_at')
+                            ->label('Créé à')
+                            ->content(fn (Appointment $record): ?string => $record->created_at?->diffForHumans()),
 
-                //->hidden(!Route::is('view'))
-
-            ])->columns(2);
+                        Forms\Components\Placeholder::make('updated_at')
+                            ->label('Dernière mise à jour')
+                            ->content(fn (Appointment $record): ?string => $record->updated_at?->diffForHumans()),
+                    ])
+                    ->columnSpan(['lg' => 1])
+                    ->hidden(fn (?Appointment $record) => $record === null),
+            ])
+            ->columns(3);
     }
 
     public static function table(Table $table): Table

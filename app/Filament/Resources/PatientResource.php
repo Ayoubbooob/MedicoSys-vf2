@@ -11,6 +11,7 @@ use App\Filament\Resources\PatientResource\RelationManagers;
 use App\Models\patient;
 use Filament\Forms;
 use Filament\Forms\Components\Card;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
@@ -19,6 +20,7 @@ use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
 
 class PatientResource extends Resource
@@ -29,7 +31,7 @@ class PatientResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-user';
 
-    public static ?string $label='Patient'; //darurya // button new ...
+    public static ?string $label = 'Patient'; //darurya // button new ...
 
     public static ?string $slug = '/patient';  //darurya
 
@@ -76,23 +78,37 @@ class PatientResource extends Resource
                                 'célibataire' => 'Célibataire',
                                 'divorcé' => 'Divorcé(e)',
                                 'veuf' => 'Veuf(veuve)',
-
                             ]),
-
                         DatePicker::make('birth_date'),
+                        FileUpload::make('image')
+                            ->label('Image')
+                            ->image(),
                         TextInput::make('last_imc')->label('IMC Actuel')->required(),
 
 
                         //**********Password will directly now hold cin@year_of_birth_date**************
-//                        TextInput::make('password')->label('Password')->maxLength(255)
-//                            ->password()
-//                            ->dehydrateStateUsing(fn ($state) => Hash::make($state))
-//                            ->dehydrated(fn ($state) => filled($state)),
+                        //                        TextInput::make('password')->label('Password')->maxLength(255)
+                        //                            ->password()
+                        //                            ->dehydrateStateUsing(fn ($state) => Hash::make($state))
+                        //                            ->dehydrated(fn ($state) => filled($state)),
                         //                            ->required(fn (string $context): bool => $context === 'create'),
 
 
-                    ])->columns(2)
-            ]);
+                    ])->columnSpan(['lg' => fn (?Patient $record) => $record === null ? 3 : 2]),
+                Forms\Components\Card::make()
+                    ->schema([
+                        Forms\Components\Placeholder::make('created_at')
+                            ->label('Créé à')
+                            ->content(fn (Patient $record): ?string => $record->created_at?->diffForHumans()),
+
+                        Forms\Components\Placeholder::make('updated_at')
+                            ->label('Dernière mise à jour')
+                            ->content(fn (Patient $record): ?string => $record->updated_at?->diffForHumans()),
+                    ])
+                    ->columnSpan(['lg' => 1])
+                    ->hidden(fn (?Patient $record) => $record === null),
+            ])
+            ->columns(3);
     }
 
     public static function table(Table $table): Table
@@ -104,19 +120,55 @@ class PatientResource extends Resource
             ->value('bmi');
         return $table
             ->columns([
-//                TextColumn::make('id')->sortable(),
-                TextColumn::make('first_name')->sortable()->searchable()->label('Prénom'),
-                TextColumn::make('last_name')->sortable()->searchable()->label('Nom'),
-                TextColumn::make('cin')->sortable()->searchable(),
-                //TextColumn::make('ppr')->sortable()->searchable(),
-                TextColumn::make('num')->sortable()->label('Tel'),
-                TextColumn::make('email'),
-                TextColumn::make('gender')->label('Genre'),
-                TextColumn::make('last_imc')->label('Le dernier IMC'),
-
+                Tables\Columns\ImageColumn::make('image')
+                    ->label('Image'),
+                TextColumn::make('first_name')->sortable()->toggleable()->searchable()->label('Prénom'),
+                TextColumn::make('last_name')->sortable()->toggleable()->searchable()->label('Nom'),
+                TextColumn::make('cin')->sortable()->toggleable()->searchable(),
+                TextColumn::make('num')->sortable()->toggleable()->label('Tel'),
+                TextColumn::make('email')->toggleable(),
+                TextColumn::make('gender')->toggleable()->label('Genre'),
+                TextColumn::make('last_imc')->searchable()->toggleable()->label('Le dernier IMC'),
             ])
             ->filters([
-                //
+                Tables\Filters\Filter::make('created_at')
+                    ->form([
+                        Forms\Components\DatePicker::make('created_from')
+                            ->placeholder(fn ($state): string => 'Dec 18, ' . now()->subYear()->format('Y')),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['created_from'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                            );
+                    })
+                    ->indicateUsing(function (array $data): array {
+                        $indicators = [];
+                        if ($data['created_from'] ?? null) {
+                            $indicators['created_from'] = 'Patient from ' . Carbon::parse($data['created_from'])->toFormattedDateString();
+                        }
+                        return $indicators;
+                    }),
+                Tables\Filters\Filter::make('updated_at')
+                    ->form([
+                        Forms\Components\DatePicker::make('updated_from')
+                            ->placeholder(fn ($state): string => 'Dec 18, ' . now()->subYear()->format('Y')),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['updated_from'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('updated_at', '>=', $date),
+                            );
+                    })
+                    ->indicateUsing(function (array $data): array {
+                        $indicators = [];
+                        if ($data['updated_from'] ?? null) {
+                            $indicators['updated_from'] = 'Patient from ' . Carbon::parse($data['updated_from'])->toFormattedDateString();
+                        }
+                        return $indicators;
+                    }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -143,7 +195,6 @@ class PatientResource extends Resource
             'create' => Pages\CreatePatient::route('/create'),
             'edit' => Pages\EditPatient::route('/{record}/edit'),
             'view' => Pages\ViewPatient::route('/{record}'),
-
         ];
     }
 }
